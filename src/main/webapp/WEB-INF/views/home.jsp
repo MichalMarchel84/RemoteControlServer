@@ -14,6 +14,7 @@
     <script src="resources/js/sockjs-0.3.4.js"></script>
     <script src="resources/js/stomp.js"></script>
     <script src="resources/js/script.js" defer></script>
+    <link rel="stylesheet" href="resources/css/style.css">
 </head>
 <body>
 <h1>Home Page</h1>
@@ -26,6 +27,9 @@
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 </sec:authorize>
+<div>
+    <video autoplay id="video" class="video"></video>
+</div>
 <ul id="robots">
     <c:forEach items="${robots}" var="robot">
         <li id="id${robot.id}">
@@ -34,5 +38,6 @@
         </li>
     </c:forEach>
 </ul>
+<label id="message"></label>
 </body>
 </html>

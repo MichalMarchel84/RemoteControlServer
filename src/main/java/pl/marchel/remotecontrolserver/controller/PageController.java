@@ -9,7 +9,6 @@ import pl.marchel.remotecontrolserver.model.Robot;
 import pl.marchel.remotecontrolserver.service.RobotService;
 import pl.marchel.remotecontrolserver.utils.RobotRegistry;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -26,7 +25,7 @@ public class PageController {
     @GetMapping("/home")
     public String home(Model model){
         List<Robot> robots = service.findByUser("admin");
-        robots.forEach(robot -> robot.setConnectedWith(Integer.toString(registry.status(robot.getId()))));
+        robots.forEach(robot -> robot.setConnectedWith(Integer.toString(registry.status(robot.getId().toString()))));
         model.addAttribute("robots", robots);
         return "home";
     }

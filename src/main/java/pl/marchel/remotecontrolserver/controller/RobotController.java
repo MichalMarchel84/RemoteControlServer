@@ -1,79 +1,73 @@
 package pl.marchel.remotecontrolserver.controller;
 
+import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 import pl.marchel.remotecontrolserver.model.Robot;
 import pl.marchel.remotecontrolserver.model.TypedMessage;
+import pl.marchel.remotecontrolserver.service.MessageService;
 import pl.marchel.remotecontrolserver.service.RobotService;
+import pl.marchel.remotecontrolserver.utils.ClientRegistry;
 import pl.marchel.remotecontrolserver.utils.RobotRegistry;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.HashSet;
-import java.util.Set;
-
 @Controller
-@RequestMapping("/robot")
 public class RobotController {
 
     private final RobotService service;
-    private final RobotRegistry registry;
+    private final RobotRegistry robotRegistry;
     private final SimpMessagingTemplate template;
+    private final MessageService messageService;
 
-    public RobotController(RobotService service, RobotRegistry registry, SimpMessagingTemplate template) {
+    public RobotController(RobotService service, RobotRegistry registry, SimpMessagingTemplate template, MessageService messageService) {
         this.service = service;
-        this.registry = registry;
+        this.robotRegistry = registry;
         this.template = template;
+        this.messageService = messageService;
     }
 
-    @RequestMapping("/authenticate")
-    @ResponseBody
-    public String authenticate(HttpServletRequest request,
-                               HttpServletResponse response,
-                               @RequestHeader("robotId") String id,
-                               @RequestHeader("robotPass") String pass){
+    @SubscribeMapping("/authenticate")
+    public void authenticate(Message message,
+                             @Header("simpSessionId") String sessionId,
+                             @Header("robotId") String robotId,
+                             @Header("robotPass") String pass) {
 
-        long parsedId;
-        try {
-            parsedId = Long.parseLong(id);
-        }catch (NumberFormatException e){
-            return "Id format incorrect";
-        }
-        var res = service.findById(parsedId);
-        if(res.isPresent()){
+
+        var res = service.findById(robotId);
+        if (res.isPresent()) {
             Robot robot = res.get();
-            if(robot.getPassword().equals(pass)){
-                Set<GrantedAuthority> authorities = new HashSet<>();
-                authorities.add(new SimpleGrantedAuthority("ROLE_ROBOT"));
-                User user = new User(id, pass, authorities);
-                Authentication auth = new UsernamePasswordAuthenticationToken(user, pass, authorities);
-                SecurityContext sc = SecurityContextHolder.getContext();
-                sc.setAuthentication(auth);
-                HttpSession session = request.getSession();
-                session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
-                registry.register(robot);
-                String payload = "{\"robotId\": " + robot.getId() + ", \"status\": 1}";
-                TypedMessage message = new TypedMessage();
-                message.setType("info");
-                message.setData(payload);
-                template.convertAndSend("/channels/public", message);
-                response.addHeader("Access-Control-Allow-Origin", "chrome-extension://omcjoefhfhpmjkofljiolojnmofenkpe");
-                response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
-                response.addHeader("Access-Control-Allow-Credentials", "true");
-//                response.addHeader("Access-Control-Allow-Credentials", "true");
-                return "OK";
-            }else return "Wrong password";
-        }else return "Wrong id";
+            if (robot.getPassword().equals(pass)) {
+                robotRegistry.register(sessionId, robot);
+                if(robot.getOwner().getId() == 1)messageService.sendPublic(robot.getId().toString(), 1);
+                template.convertAndSend("/channels/" + sessionId, "", message.getHeaders());
+            }
+        }
+    }
+
+    @MessageMapping("/reports")
+    public void report(@Payload TypedMessage message, @Header("simpSessionId") String robotSession){
+        String clientSession = robotRegistry.getConnectedWith(robotSession);
+        if(clientSession != null) {
+            switch (message.getType()) {
+                case "connect":
+                    messageService.sendToClient(clientSession, "Connected");
+                    break;
+                case "disconnect":
+                    messageService.sendToClient(clientSession, "You are disconnected");
+                    robotRegistry.disconnect(robotSession);
+                    break;
+                case "failed":
+                    messageService.sendToClient(clientSession, "Failed to establish connection");
+                    robotRegistry.disconnect(robotSession);
+                    break;
+                case "timeout":
+                    messageService.sendToClient(clientSession, "Signalling timed out");
+                    robotRegistry.disconnect(robotSession);
+                    break;
+            }
+        }
     }
 }

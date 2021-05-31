@@ -13,7 +13,7 @@ public class Robot {
     private Long id;
     private String name;
     private String password;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User owner;
     @Transient
     private String connectedWith;

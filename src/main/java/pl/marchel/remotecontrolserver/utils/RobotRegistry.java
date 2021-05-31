@@ -1,7 +1,9 @@
 package pl.marchel.remotecontrolserver.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.marchel.remotecontrolserver.model.Robot;
+import pl.marchel.remotecontrolserver.service.MessageService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,41 +11,93 @@ import java.util.Map;
 @Component
 public class RobotRegistry {
 
-    private final Map<Long, Robot> registry = new HashMap<>();
+    private final Map<String, Robot> registry = new HashMap<>();
+    private final Map<String, String> association = new HashMap<>();
+    private final MessageService messageService;
+    private ClientRegistry clientRegistry;
 
-    public void register(Robot robot){
-        registry.put(robot.getId(), robot);
+    public RobotRegistry(MessageService messageService) {
+        this.messageService = messageService;
     }
 
-    public void remove(Long id){
-        registry.remove(id);
+    @Autowired
+    public void setClientRegistry(ClientRegistry clientRegistry) {
+        this.clientRegistry = clientRegistry;
     }
 
-    public boolean connect(String userId, Long robotId){
+    public void register(String sessionId, Robot robot) {
 
-        Robot robot = registry.get(robotId);
-        if(robot != null) {
+        registry.put(sessionId, robot);
+        association.put(robot.getId().toString(), sessionId);
+    }
+
+    public void remove(String sessionId) {
+        Robot robot = registry.get(sessionId);
+        if (robot != null) {
+            synchronized (robot) {
+                if (robot.getConnectedWith() != null) {
+                    clientRegistry.dropConnection(robot.getConnectedWith());
+                    messageService.sendToClient(robot.getConnectedWith(), "Robot disconnected - connection lost");
+                }
+                association.remove(robot);
+                registry.remove(sessionId);
+            }
+        }
+    }
+
+    public void connect(String userSessionId, String robotId) {
+
+        Robot robot = registry.get(association.get(robotId));
+        if (robot != null) {
             synchronized (robot) {
                 if (robot.getConnectedWith() == null) {
-                    robot.setConnectedWith(userId);
-                    return true;
+                    robot.setConnectedWith(userSessionId);
                 }
             }
         }
-        return false;
     }
 
-    public int status(Long robotId){
-        Robot robot = registry.get(robotId);
-        if(robot != null){
-            if(robot.getConnectedWith() != null) return 2;
+    public int status(String id) {
+        Robot robot = registry.get(association.get(id));
+        if (robot != null) {
+            if (robot.getConnectedWith() != null) return 2;
             return 1;
         }
         return 0;
     }
 
-    public void disconnect(Long robotId){
-        Robot robot = registry.get(robotId);
+    public void disconnect(String sessionId) {
+        Robot robot = registry.get(sessionId);
+        if(robot.getConnectedWith() != null) {
+            clientRegistry.dropConnection(robot.getConnectedWith());
+            if(robot.getOwner().getId() == 1) messageService.sendPublic(robot.getId().toString(), 1);
+        }
         robot.setConnectedWith(null);
+    }
+
+    public void dropConnection(String robotSession) {
+        Robot robot = registry.get(robotSession);
+        if((robot != null) && (robot.getConnectedWith() != null)) {
+            if(robot.getOwner().getId() == 1) messageService.sendPublic(robot.getId().toString(), 1);
+            robot.setConnectedWith(null);
+        }
+    }
+
+    public String getSessionId(String robotId) {
+        return association.get(robotId);
+    }
+
+    public Robot getRobotById(String robotId) {
+        String sessionId = getSessionId(robotId);
+        if (sessionId != null) return registry.get(sessionId);
+        return null;
+    }
+
+    public Robot getRobotBySession(String robotSession){
+        return registry.get(robotSession);
+    }
+
+    public String getConnectedWith(String robotSession) {
+        return registry.get(robotSession).getConnectedWith();
     }
 }
