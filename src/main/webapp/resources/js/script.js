@@ -1,4 +1,9 @@
+const configuration = null;
+let peerConnection = null;
 let stompClient = null;
+let dataChannel = null;
+let stream = null;
+
 document.querySelector("#robots")
     .querySelectorAll("button")
     .forEach(b => b.addEventListener("click", function () {
@@ -9,11 +14,12 @@ document.querySelector("#robots")
                 onMessage(JSON.parse(msg.body));
             },
             {"robotId": id});
-    }))
-connect();
+    }));
+document.querySelector("#disconnect").addEventListener("click", function () {
+    disconnect();
+})
 
-const configuration = null;
-const peerConnection = new RTCPeerConnection(configuration);
+connect();
 
 function connect() {
 
@@ -25,6 +31,7 @@ function connect() {
             onMessage(JSON.parse(msg.body));
         });
     });
+    initializePeerConnection();
 }
 
 function onMessage(msg) {
@@ -51,7 +58,7 @@ function send(type, data) {
     stompClient.send("/app/signalling", {"caller": "user"}, JSON.stringify({"type": type, "data": data}));
 }
 
-function sendKeys(keys){
+function sendKeys(keys) {
     dataChannel.send(JSON.stringify({"keys": keys}));
 }
 
@@ -64,55 +71,94 @@ function updateList(message) {
     li.querySelector("label").innerText = `Status: ${status}`;
 }
 
-peerConnection.ondatachannel = function (event) {
-    dataChannel = event.channel;
-    dataChannel.onerror = function (error) {
-        console.log("Error:", error);
-    };
-    dataChannel.onclose = function () {
-        console.log("Data channel is closed");
-    };
-    dataChannel.onmessage = function (msg) {
-        showMessageOutput(msg.data);
-    };
-    let timer;
-    dataChannel.onopen = function () {
-        const keysDown = [];
+function disconnect() {
 
-        document.addEventListener("keydown", function (e) {
-            const i = keysDown.indexOf(e.key);
-            if (i === -1) keysDown.push(e.key);
-            sendKeys(keysDown);
+    document.querySelector("#video").style.display = "none";
+    document.querySelector("#robots").style.display = "block";
+    document.querySelector("#disconnect").style.display = "none";
+    finalizePeerConnection();
+    initializePeerConnection();
+}
+
+function initializePeerConnection() {
+
+    stream = new MediaStream();
+    peerConnection = new RTCPeerConnection(configuration);
+
+    peerConnection.ondatachannel = function (event) {
+        dataChannel = event.channel;
+        dataChannel.onerror = function (error) {
+            console.log("Error:", error);
+        };
+        dataChannel.onclose = function () {
+            console.log("Data channel is closed");
+        };
+        dataChannel.onmessage = function (msg) {
+            showMessageOutput(msg.data);
+        };
+        let timer;
+        dataChannel.onopen = function () {
+            const keysDown = [];
+
+            document.addEventListener("keydown", function (e) {
+                const i = keysDown.indexOf(e.key);
+                if (i === -1) keysDown.push(e.key);
+                sendKeys(keysDown);
+            });
+
+            document.addEventListener("keyup", function (e) {
+                const i = keysDown.indexOf(e.key);
+                if (i > -1) keysDown.splice(i, 1);
+                sendKeys(keysDown);
+            });
+
+            timer = window.setInterval(() => {
+                if (keysDown.length) {
+                    sendKeys(keysDown)
+                }
+            }, 500);
+        }
+        dataChannel.onclose = function () {
+            window.clearInterval(timer);
+        }
+    };
+
+    peerConnection.onicecandidate = function (event) {
+        if (event.candidate) {
+            send("candidate", event.candidate);
+        }
+    };
+
+    peerConnection.ontrack = function (event) {
+        const video = document.querySelector("#video");
+        video.srcObject = stream;
+        stream.addTrack(event.track);
+        video.style.cssText = "-moz-transform: scale(-1, -1); -webkit-transform: scale(-1, -1); -o-transform: scale(-1, -1); transform: scale(-1, -1); filter: FlipV; filter: FlipH";
+    }
+
+    peerConnection.onconnectionstatechange = function (event) {
+        switch (peerConnection.connectionState) {
+            case "connected":
+                document.querySelector("#video").style.display = "block";
+                document.querySelector("#robots").style.display = "none";
+                document.querySelector("#disconnect").style.display = "inline";
+                break;
+            case "disconnected":
+                disconnect();
+                break;
+        }
+    }
+}
+
+function finalizePeerConnection() {
+    if (stream != null) {
+        stream.getTracks().forEach(function (track) {
+            track.stop();
         });
-
-        document.addEventListener("keyup", function (e) {
-            const i = keysDown.indexOf(e.key);
-            if (i > -1) keysDown.splice(i, 1);
-            sendKeys(keysDown);
-        });
-
-        timer = window.setInterval(() => {if(keysDown.length){sendKeys(keysDown)}}, 500);
     }
-    dataChannel.onclose = function (){
-        window.clearInterval(timer);
-    }
-};
-
-
-let dataChannel;
-
-peerConnection.onicecandidate = function (event) {
-    if (event.candidate) {
-        send("candidate", event.candidate);
-    }
-};
-
-// ------Video------
-
-peerConnection.ontrack = function (event) {
-    const stream = new MediaStream();
-    const video = document.querySelector("#video");
-    video.srcObject = stream;
-    stream.addTrack(event.track);
-    video.style.cssText = "-moz-transform: scale(-1, -1); -webkit-transform: scale(-1, -1); -o-transform: scale(-1, -1); transform: scale(-1, -1); filter: FlipV; filter: FlipH";
+    stream = null;
+    if (dataChannel != null) dataChannel.close();
+    if (peerConnection != null) peerConnection.close();
+    dataChannel = null;
+    peerConnection = null;
 }

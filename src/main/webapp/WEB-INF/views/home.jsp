@@ -28,7 +28,7 @@
     </form>
 </sec:authorize>
 <div>
-    <video autoplay id="video" class="video"></video>
+    <video autoplay id="video" class="video" style="display: none"></video>
 </div>
 <ul id="robots">
     <c:forEach items="${robots}" var="robot">
@@ -38,6 +38,7 @@
         </li>
     </c:forEach>
 </ul>
+<button id="disconnect" style="display: none">Disconnect</button>
 <label id="message"></label>
 </body>
 </html>
