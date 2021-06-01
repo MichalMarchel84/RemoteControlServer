@@ -52,6 +52,7 @@ function onMessage(msg) {
         peerConnection.createAnswer(function (answer) {
             peerConnection.setLocalDescription(answer);
             send("answer", answer);
+            console.log("<<<<<<<<<<<answer sent>>>>>>>>>>>>")
         });
     } else if (msg.type === "answer") {
         peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
@@ -63,6 +64,7 @@ function onMessage(msg) {
 }
 
 function send(type, data) {
+    console.log("<<<<<<<<<<<sending " + type + ">>>>>>>>>>>>>>");
     stompClient.send("/app/signalling", {"caller": "user"}, JSON.stringify({"type": type, "data": data}));
 }
 
