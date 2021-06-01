@@ -46,19 +46,17 @@ function connect() {
     initializePeerConnection();
 }
 
-function onMessage(msg) {
+async function onMessage(msg) {
     if (msg.type === "candidate") {
-        peerConnection.addIceCandidate(new RTCIceCandidate(msg.data));
+        await peerConnection.addIceCandidate(new RTCIceCandidate(msg.data));
     } else if (msg.type === "offer") {
-        peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
-        peerConnection.createAnswer(function (answer) {
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
+        await peerConnection.createAnswer(function (answer) {
             peerConnection.setLocalDescription(answer);
             send("answer", answer);
-        }, function (error) {
-            console.log(error)
         });
     } else if (msg.type === "answer") {
-        peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
     } else if (msg.type === "info") {
         updateList(msg);
     } else if (msg.type === "message") {
@@ -161,6 +159,11 @@ function initializePeerConnection() {
             case "failed":
                 console.log("<<<<<<<<<Failed>>>>>>>>>>")
         }
+    }
+
+    peerConnection.onnegotiationneeded = async () => {
+        await peerConnection.setLocalDescription(await peerConnection.createOffer());
+        send("offer", peerConnection.localDescription);
     }
 }
 
