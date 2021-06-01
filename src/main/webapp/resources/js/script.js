@@ -161,10 +161,10 @@ function initializePeerConnection() {
         }
     }
 
-    peerConnection.onnegotiationneeded = async () => {
-        await peerConnection.setLocalDescription(await peerConnection.createOffer());
-        send("offer", peerConnection.localDescription);
-    }
+    // peerConnection.onnegotiationneeded = async () => {
+    //     await peerConnection.setLocalDescription(await peerConnection.createOffer());
+    //     send("offer", peerConnection.localDescription);
+    // }
 }
 
 function finalizePeerConnection() {
