@@ -162,6 +162,10 @@ function initializePeerConnection() {
         }
     }
 
+    peerConnection.oniceconnectionstatechange = function (event){
+        console.log("<<<<<<<<<<<ice change " + peerConnection.iceConnectionState + ">>>>>>>>>>>>>>>>");
+    }
+
     peerConnection.onnegotiationneeded = async () => {
         await peerConnection.setLocalDescription(await peerConnection.createOffer());
         send("offer", peerConnection.localDescription);
