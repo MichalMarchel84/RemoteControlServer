@@ -43,16 +43,15 @@ function connect() {
 }
 
 function onMessage(msg) {
-    console.log("<<<<<<<<<<<<Got msg>>>>>>>>>>>>>>")
     if (msg.type === "candidate") {
         peerConnection.addIceCandidate(new RTCIceCandidate(msg.data));
     } else if (msg.type === "offer") {
-        console.log("<<<<<<<<<<<<<Offer>>>>>>>>>>>>>")
         peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
         peerConnection.createAnswer(function (answer) {
             peerConnection.setLocalDescription(answer);
             send("answer", answer);
-            console.log("<<<<<<<<<<<answer sent>>>>>>>>>>>>")
+        }, function (error){
+            console.log(error);
         });
     } else if (msg.type === "answer") {
         peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
@@ -64,7 +63,6 @@ function onMessage(msg) {
 }
 
 function send(type, data) {
-    console.log("<<<<<<<<<<<sending " + type + ">>>>>>>>>>>>>>");
     stompClient.send("/app/signalling", {"caller": "user"}, JSON.stringify({"type": type, "data": data}));
 }
 
