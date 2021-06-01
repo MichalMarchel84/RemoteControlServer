@@ -1,7 +1,14 @@
 const configuration = {
-    iceServers: [{
-        urls: "stun:stun.l.google.com:19302"
-    }]
+    iceServers: [
+        {url: "stun:stun.l.google.com:19302"},
+        {url: 'stun:stun1.l.google.com:19302'},
+        {url: 'stun:stun2.l.google.com:19302'},
+        {url: 'stun:stun3.l.google.com:19302'},
+        {
+            url: 'turn:relay.backups.cz',
+            credential: 'webrtc',
+            username: 'webrtc'
+        }]
 };
 let peerConnection = null;
 let stompClient = null;
@@ -151,6 +158,8 @@ function initializePeerConnection() {
             case "disconnected":
                 disconnect();
                 break;
+            case "failed":
+                console.log("<<<<<<<<<Failed>>>>>>>>>>")
         }
     }
 }
