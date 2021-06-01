@@ -46,17 +46,17 @@ function connect() {
     initializePeerConnection();
 }
 
-async function onMessage(msg) {
+function onMessage(msg) {
     if (msg.type === "candidate") {
-        await peerConnection.addIceCandidate(new RTCIceCandidate(msg.data));
+        peerConnection.addIceCandidate(new RTCIceCandidate(msg.data));
     } else if (msg.type === "offer") {
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
-        await peerConnection.createAnswer(function (answer) {
+        peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
+        peerConnection.createAnswer(function (answer) {
             peerConnection.setLocalDescription(answer);
             send("answer", answer);
         });
     } else if (msg.type === "answer") {
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
+        peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
     } else if (msg.type === "info") {
         updateList(msg);
     } else if (msg.type === "message") {
