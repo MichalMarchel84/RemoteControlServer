@@ -106,6 +106,7 @@ function initializePeerConnection() {
         };
         let timer;
         dataChannel.onopen = function () {
+            console.log("<<<<<<<<<<<data channel open>>>>>>>>>>");
             const keysDown = [];
 
             document.addEventListener("keydown", function (e) {
@@ -138,6 +139,7 @@ function initializePeerConnection() {
     };
 
     peerConnection.ontrack = function (event) {
+        console.log("<<<<<<<<<<<<<track received>>>>>>>>>>>>>>")
         const video = document.querySelector("#video");
         video.srcObject = stream;
         stream.addTrack(event.track);
@@ -147,6 +149,7 @@ function initializePeerConnection() {
     peerConnection.onconnectionstatechange = function (event) {
         switch (peerConnection.connectionState) {
             case "connected":
+                console.log("<<<<<<<<<<<<<<connected>>>>>>>>>>>>>");
                 document.querySelector("#video").style.display = "block";
                 document.querySelector("#robots").style.display = "none";
                 document.querySelector("#disconnect").style.display = "inline";
@@ -155,14 +158,14 @@ function initializePeerConnection() {
                 disconnect();
                 break;
             case "failed":
-                console.log("<<<<<<<<<Failed>>>>>>>>>>")
+                console.log("<<<<<<<<<Failed>>>>>>>>>>");
         }
     }
 
-    // peerConnection.onnegotiationneeded = async () => {
-    //     await peerConnection.setLocalDescription(await peerConnection.createOffer());
-    //     send("offer", peerConnection.localDescription);
-    // }
+    peerConnection.onnegotiationneeded = async () => {
+        await peerConnection.setLocalDescription(await peerConnection.createOffer());
+        send("offer", peerConnection.localDescription);
+    }
 }
 
 function finalizePeerConnection() {
