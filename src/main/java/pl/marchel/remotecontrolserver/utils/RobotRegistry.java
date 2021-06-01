@@ -1,6 +1,7 @@
 package pl.marchel.remotecontrolserver.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import pl.marchel.remotecontrolserver.model.Robot;
 import pl.marchel.remotecontrolserver.service.MessageService;
@@ -20,6 +21,7 @@ public class RobotRegistry {
         this.messageService = messageService;
     }
 
+    @Lazy
     @Autowired
     public void setClientRegistry(ClientRegistry clientRegistry) {
         this.clientRegistry = clientRegistry;
