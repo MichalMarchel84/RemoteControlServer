@@ -1,8 +1,13 @@
-const configuration = null;
+const configuration = {
+    iceServers: [{
+        urls: "stun:stun.l.google.com:19302"
+    }]
+};
 let peerConnection = null;
 let stompClient = null;
 let dataChannel = null;
 let stream = null;
+
 
 document.querySelector("#robots")
     .querySelectorAll("button")
