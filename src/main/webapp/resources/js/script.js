@@ -94,7 +94,7 @@ function initializePeerConnection() {
             console.log("Data channel is closed");
         };
         dataChannel.onmessage = function (msg) {
-            showMessageOutput(msg.data);
+            //handle message from robot
         };
         let timer;
         dataChannel.onopen = function () {
