@@ -3,12 +3,8 @@ const configuration = {
         {url: "stun:stun.l.google.com:19302"},
         {url: 'stun:stun1.l.google.com:19302'},
         {url: 'stun:stun2.l.google.com:19302'},
-        {url: 'stun:stun3.l.google.com:19302'},
-        {
-            url: 'turn:relay.backups.cz',
-            credential: 'webrtc',
-            username: 'webrtc'
-        }]
+        {url: 'stun:stun3.l.google.com:19302'}
+        ]
 };
 let peerConnection = null;
 let stompClient = null;
@@ -47,9 +43,11 @@ function connect() {
 }
 
 function onMessage(msg) {
+    console.log("<<<<<<<<<<<<Got msg>>>>>>>>>>>>>>")
     if (msg.type === "candidate") {
         peerConnection.addIceCandidate(new RTCIceCandidate(msg.data));
     } else if (msg.type === "offer") {
+        console.log("<<<<<<<<<<<<<Offer>>>>>>>>>>>>>")
         peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
         peerConnection.createAnswer(function (answer) {
             peerConnection.setLocalDescription(answer);
