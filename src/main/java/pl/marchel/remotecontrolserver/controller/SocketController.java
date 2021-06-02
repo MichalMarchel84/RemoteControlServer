@@ -13,6 +13,7 @@ import pl.marchel.remotecontrolserver.model.Robot;
 import pl.marchel.remotecontrolserver.utils.RobotRegistry;
 import pl.marchel.remotecontrolserver.utils.ClientRegistry;
 import pl.marchel.remotecontrolserver.service.MessageService;
+import pl.marchel.remotecontrolserver.utils.Utils;
 
 import java.security.Principal;
 
@@ -54,21 +55,15 @@ public class SocketController {
                       @Header("simpSessionId") String clientSession,
                       @Header("robotId") String robotId) {
 
-        robotId = robotId.replace("id", "");
         template.convertAndSend("/channels/" + clientSession, "", message.getHeaders());
         Robot robot = robotRegistry.getRobotById(robotId);
-        if(robot != null){
-            if(!robot.getOwner().getUsername().equals("admin")){
-                if((user == null) || (!user.getName().equals(robot.getOwner().getUsername()))){
-                    log.warn("Unauthorized connection to robot {} by user {}", robot, user);
-                    return;
-                }
-            }
+        if(Utils.verifyAuthorized(user, robot)){
             synchronized (robot) {
                 clientRegistry.connectWith(clientSession, robotId);
             }
+            messageService.sendToClient(clientSession, "");
         }else {
-            messageService.sendToClient(clientSession, "Robot offline");
+            messageService.sendToClient(clientSession, "Robot not available");
         }
     }
 }

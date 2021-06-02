@@ -4,40 +4,30 @@ const configuration = {
         {url: 'stun:stun1.l.google.com:19302'},
         {url: 'stun:stun2.l.google.com:19302'},
         {url: 'stun:stun3.l.google.com:19302'}
-        ]
+    ]
 };
+const keysDown = [];
 let peerConnection = null;
 let stompClient = null;
 let dataChannel = null;
 let stream = null;
+let timer;
 
+connect();
+document.querySelector("#disconnect").addEventListener("click", disconnect);
 
-document.querySelector("#robots")
-    .querySelectorAll("button")
-    .forEach(b => b.addEventListener("click", function () {
-        const id = b.parentElement.id;
-        document.querySelector("#message").innerHTML = "Connecting...";
+function connect() {
+
+    const id = document.querySelector("#head").dataset.id;
+    const socket = new SockJS('/endpoint');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+
         stompClient.subscribe('/app/begin',
             function (msg) {
                 onMessage(JSON.parse(msg.body));
             },
             {"robotId": id});
-    }));
-document.querySelector("#disconnect").addEventListener("click", function () {
-    disconnect();
-})
-
-connect();
-
-function connect() {
-
-    const socket = new SockJS('/endpoint');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-
-        stompClient.subscribe('/app/public', function (msg) {
-            onMessage(JSON.parse(msg.body));
-        });
     });
     initializePeerConnection();
 }
@@ -55,8 +45,6 @@ function onMessage(msg) {
         });
     } else if (msg.type === "answer") {
         peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
-    } else if (msg.type === "info") {
-        updateList(msg);
     } else if (msg.type === "message") {
         document.querySelector("#message").innerHTML = msg.data;
     }
@@ -70,23 +58,25 @@ function sendKeys(keys) {
     dataChannel.send(JSON.stringify({"keys": keys}));
 }
 
-function updateList(message) {
-    const data = JSON.parse(message.data);
-    const id = data.robotId;
-    const status = data.status;
-    const list = document.querySelector("#robots");
-    const li = list.querySelector(`#id${id}`);
-    li.querySelector("label").innerText = `Status: ${status}`;
-}
-
 function disconnect() {
 
     document.querySelector("#video").style.display = "none";
-    document.querySelector("#robots").style.display = "block";
     document.querySelector("#disconnect").style.display = "none";
     finalizePeerConnection();
     initializePeerConnection();
 }
+
+function keyDown(e) {
+    const i = keysDown.indexOf(e.key);
+    if (i === -1) keysDown.push(e.key);
+    sendKeys(keysDown);
+}
+
+function keyUp(e) {
+    const i = keysDown.indexOf(e.key);
+    if (i > -1) keysDown.splice(i, 1);
+    sendKeys(keysDown);
+};
 
 function initializePeerConnection() {
 
@@ -104,23 +94,10 @@ function initializePeerConnection() {
         dataChannel.onmessage = function (msg) {
             //handle message from robot
         };
-        let timer;
         dataChannel.onopen = function () {
-            console.log("<<<<<<<<<<<data channel open>>>>>>>>>>");
-            const keysDown = [];
 
-            document.addEventListener("keydown", function (e) {
-                const i = keysDown.indexOf(e.key);
-                if (i === -1) keysDown.push(e.key);
-                sendKeys(keysDown);
-            });
-
-            document.addEventListener("keyup", function (e) {
-                const i = keysDown.indexOf(e.key);
-                if (i > -1) keysDown.splice(i, 1);
-                sendKeys(keysDown);
-            });
-
+            document.addEventListener("keydown", keyDown);
+            document.addEventListener("keyup", keyUp);
             timer = window.setInterval(() => {
                 if (keysDown.length) {
                     sendKeys(keysDown)
@@ -129,6 +106,8 @@ function initializePeerConnection() {
         }
         dataChannel.onclose = function () {
             window.clearInterval(timer);
+            document.removeEventListener("keydown", keyDown);
+            document.removeEventListener("keyup", keyUp);
         }
     };
 
@@ -139,7 +118,6 @@ function initializePeerConnection() {
     };
 
     peerConnection.ontrack = function (event) {
-        console.log("<<<<<<<<<<<<<track received>>>>>>>>>>>>>>")
         const video = document.querySelector("#video");
         video.srcObject = stream;
         stream.addTrack(event.track);
@@ -149,10 +127,8 @@ function initializePeerConnection() {
     peerConnection.onconnectionstatechange = function (event) {
         switch (peerConnection.connectionState) {
             case "connected":
-                console.log("<<<<<<<<<<<<<<connected>>>>>>>>>>>>>");
                 document.querySelector("#video").style.display = "block";
-                document.querySelector("#robots").style.display = "none";
-                document.querySelector("#disconnect").style.display = "inline";
+                document.querySelector("#disconnect").style.display = "block";
                 break;
             case "disconnected":
                 disconnect();
@@ -160,15 +136,6 @@ function initializePeerConnection() {
             case "failed":
                 console.log("<<<<<<<<<Failed>>>>>>>>>>");
         }
-    }
-
-    peerConnection.oniceconnectionstatechange = function (event){
-        console.log("<<<<<<<<<<<ice change " + peerConnection.iceConnectionState + ">>>>>>>>>>>>>>>>");
-    }
-
-    peerConnection.onnegotiationneeded = async () => {
-        await peerConnection.setLocalDescription(await peerConnection.createOffer());
-        send("offer", peerConnection.localDescription);
     }
 }
 

@@ -15,6 +15,8 @@ public class Robot {
     private String password;
     @ManyToOne(fetch = FetchType.EAGER)
     private User owner;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Script script;
     @Transient
     private String connectedWith;
 }

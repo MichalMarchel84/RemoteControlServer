@@ -2,6 +2,7 @@ package pl.marchel.remotecontrolserver.service;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+import pl.marchel.remotecontrolserver.model.StatusMessage;
 import pl.marchel.remotecontrolserver.model.TypedMessage;
 
 @Component
@@ -15,10 +16,7 @@ public class MessageService {
 
     public void sendPublic(String robotId, int status){
 
-        String payload = String.format("{\"robotId\": %s, \"status\": %s}", robotId, status);
-        TypedMessage publicMsg = new TypedMessage();
-        publicMsg.setType("info");
-        publicMsg.setData(payload);
+        StatusMessage publicMsg = new StatusMessage(robotId, status);
         template.convertAndSend("/channels/public", publicMsg);
     }
 

@@ -10,16 +10,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>Remote Control</title>
+    <title>Home</title>
     <script src="resources/js/sockjs-0.3.4.js"></script>
     <script src="resources/js/stomp.js"></script>
-    <script src="resources/js/script.js" defer></script>
+    <script src="resources/js/home.js" defer></script>
     <link rel="stylesheet" href="resources/css/style.css">
 </head>
 <body>
 <h1>Home Page</h1>
 <sec:authorize access="!isAuthenticated()">
-        <button onclick="window.location.href='/login'">Login</button>
+    <button onclick="window.location.href='/login'">Login</button>
 </sec:authorize>
 <sec:authorize access="isAuthenticated()">
     <form action="<c:url value="/logout"/>" method="post">
@@ -27,18 +27,15 @@
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 </sec:authorize>
-<div>
-    <video autoplay id="video" class="video" style="display: none"></video>
-</div>
+
 <ul id="robots">
     <c:forEach items="${robots}" var="robot">
         <li id="id${robot.id}">
-            <button>${robot.name}</button>
-            <label>Status: ${robot.connectedWith}</label>
+            <button onclick="window.open('/control?id=${robot.id}', '_blank')">${robot.name}</button>
+            <label>${robot.connectedWith}</label>
         </li>
     </c:forEach>
 </ul>
-<button id="disconnect" style="display: none">Disconnect</button>
-<label id="message"></label>
+
 </body>
 </html>
