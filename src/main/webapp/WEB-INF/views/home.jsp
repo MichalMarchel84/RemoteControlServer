@@ -17,25 +17,43 @@
     <link rel="stylesheet" href="resources/css/style.css">
 </head>
 <body>
-<h1>Home Page</h1>
-<sec:authorize access="!isAuthenticated()">
-    <button onclick="window.location.href='/login'">Login</button>
-</sec:authorize>
-<sec:authorize access="isAuthenticated()">
-    <form action="<c:url value="/logout"/>" method="post">
-        <input type="submit" value="Logout">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-    </form>
-</sec:authorize>
 
-<ul id="robots">
-    <c:forEach items="${robots}" var="robot">
-        <li id="id${robot.id}">
-            <button onclick="window.open('/control?id=${robot.id}', '_blank')">${robot.name}</button>
-            <label>${robot.connectedWith}</label>
-        </li>
-    </c:forEach>
-</ul>
+<%@include file="header.jsp" %>
 
+<div class="flex f-column">
+    <h1 class="page-font f30 page-color mt5">Remote Control Project</h1>
+    <p class="f20">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac
+        neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. Sed rhoncus, tortor sed eleifend tristique,
+        tortor mauris molestie elit, et lacinia ipsum quam nec dui. Quisque nec mauris sit amet elit iaculis pretium sit
+        amet quis magna. Aenean velit odio, elementum in tempus ut, vehicula eu diam. Pellentesque rhoncus aliquam
+        mattis. Ut vulputate eros sed felis sodales nec vulputate justo hendrerit. Vivamus varius pretium ligula, a
+        aliquam odio euismod sit amet. Quisque laoreet sem sit amet orci ullamcorper at ultricies metus viverra.
+        Pellentesque arcu mauris, malesuada quis ornare accumsan, blandit sed diam.</p>
+    <div class="flex f-column f-center page-border vm5">
+        <h2 class="page-font f30 page-color">Try it yourself</h2>
+        <div class="flex f-between mb3">
+            <div class="table-element flex f-column f-center vertical-line f20">
+                <h3 class="page-font page-color">Robots available</h3>
+                <ul id="robots" class="list-none">
+                    <c:forEach items="${robots}" var="robot">
+                        <li id="id${robot.id}" class="flex f-baseline">
+                            <button onclick="window.open('/control?id=${robot.id}', '_blank')" class="button-robot f20">
+                                    ${robot.name}<canvas class="lamp-red"></canvas>
+                            </button>
+                            <label class="page-font">${robot.connectedWith}</label>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </div>
+            <p class="table-element f20">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit,
+                vulputate eu pharetra nec,
+                mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. Sed rhoncus, tortor sed
+                eleifend tristique, tortor mauris molestie elit, et lacinia ipsum quam nec dui. Quisque nec mauris sit
+                amet elit iaculis pretium sit amet quis magna. Aenean velit odio, elementum in tempus ut, vehicula eu
+                diam. Pellentesque rhoncus aliquam mattis. Ut vulputate eros sed felis sodales nec vulputate justo
+                hendrerit. Vivamus varius pretium ligula, a aliquam odio euismod sit amet.</p>
+        </div>
+    </div>
+</div>
 </body>
 </html>

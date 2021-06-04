@@ -46,7 +46,7 @@ function onMessage(msg) {
     } else if (msg.type === "answer") {
         peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data));
     } else if (msg.type === "message") {
-        document.querySelector("#message").innerHTML = msg.data;
+        document.querySelector("#message").innerText = msg.data;
     }
 }
 

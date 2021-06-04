@@ -24,42 +24,38 @@ function onMessage(msg) {
 function initializeList(){
     const list = document.querySelector("#robots");
     for (let i = 0; i < list.children.length; i++) {
-        const label = list.children[i].querySelector("label");
-        const button = list.children[i].querySelector("button");
-        switch (label.innerText){
-            case "0":
-                label.innerText = "Offline";
-                button.disabled = true;
-                break;
-            case "1":
-                label.innerText = "Ready";
-                break;
-            case "2":
-                label.innerText = "In use";
-                button.disabled = true;
-                break;
-        }
+        setStatus(list.children[i], list.children[i].querySelector("label").innerText);
     }
 }
 
 function updateList(message) {
     const id = message.robotId;
-    const status = message.status;
+    const status = message.status.toString();
     const list = document.querySelector("#robots");
     const li = list.querySelector(`#id${id}`);
+    setStatus(li, status);
+}
+
+function setStatus(listItem, status){
+
+    const label = listItem.querySelector("label");
+    const btn = listItem.querySelector("button");
+    const lamp = btn.querySelector("canvas");
     switch (status){
-        case 0:
-            li.querySelector("label").innerText = "Offline";
-            li.querySelector("button").disabled = true;
+        case "0":
+            label.innerText = "Offline";
+            btn.disabled = true;
+            lamp.className = "lamp-red";
             break;
-        case 1:
-            li.querySelector("label").innerText = "Ready";
-            li.querySelector("button").disabled = false;
+        case "1":
+            label.innerText = "Ready";
+            btn.disabled = false;
+            lamp.className = "lamp-green";
             break;
-        case 2:
-            li.querySelector("label").innerText = "In use";
-            li.querySelector("button").disabled = true;
+        case "2":
+            label.innerText = "In use";
+            btn.disabled = true;
+            lamp.className = "lamp-blue";
             break;
     }
-
 }

@@ -13,13 +13,19 @@
     <script src="resources/js/stomp.js"></script>
     <script ${script} defer></script>
     <link rel="stylesheet" href="resources/css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h2 id="head" data-id="${robotId}">${robotName}</h2>
-    <div>
-        <video autoplay id="video" class="video" style="display: none"></video>
+<body style="margin: 0">
+<div class="flex f-column f-center">
+    <div class="video flex f-center f-around">
+        <video autoplay id="video" class="stream"></video>
     </div>
-    <button id="disconnect" style="display: none">Disconnect</button>
-    <label id="message"></label>
+    <div class="flex f-baseline page-font f30 vmt3">
+        <label id="head" data-id="${robotId}">${robotName}</label>
+        <label id="message">Test</label>
+        <button id="disconnect" style="display: none">Disconnect</button>
+    </div>
+</div>
 </body>
 </html>
