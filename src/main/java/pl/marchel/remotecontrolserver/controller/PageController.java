@@ -35,8 +35,9 @@ public class PageController {
     }
 
     @GetMapping("/devices")
-    public String devices(@AuthenticationPrincipal UserDetails details){
-
+    public String devices(@AuthenticationPrincipal UserDetails details, Model model){
+        model.addAttribute("robots", service.findByUser(details.getUsername()));
+        model.addAttribute("userName", details.getUsername());
         return "devices";
     }
 

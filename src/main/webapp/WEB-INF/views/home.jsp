@@ -34,13 +34,13 @@
         <div class="flex f-between mb3">
             <div class="table-element flex f-column f-center vertical-line f20">
                 <h3 class="page-font page-color">Robots available</h3>
-                <ul id="robots" class="list-none">
+                <ul id="robots" class="list-none flex f-column">
                     <c:forEach items="${robots}" var="robot">
-                        <li id="id${robot.id}" class="flex f-baseline">
+                        <li id="id${robot.id}" class="flex f-center mb3 f20">
                             <button onclick="window.open('/control?id=${robot.id}', '_blank')" class="button-robot f20">
-                                    ${robot.name}<canvas class="lamp-red"></canvas>
+                                    <c:out value="${robot.name}"/><canvas class="lamp-red"></canvas>
                             </button>
-                            <label class="page-font">${robot.connectedWith}</label>
+                            <label class="page-font ml2">${robot.connectedWith}</label>
                         </li>
                     </c:forEach>
                 </ul>
@@ -51,7 +51,8 @@
                 eleifend tristique, tortor mauris molestie elit, et lacinia ipsum quam nec dui. Quisque nec mauris sit
                 amet elit iaculis pretium sit amet quis magna. Aenean velit odio, elementum in tempus ut, vehicula eu
                 diam. Pellentesque rhoncus aliquam mattis. Ut vulputate eros sed felis sodales nec vulputate justo
-                hendrerit. Vivamus varius pretium ligula, a aliquam odio euismod sit amet.</p>
+                hendrerit. Vivamus varius pretium ligula, a aliquam odio euismod sit amet.
+            </p>
         </div>
     </div>
 </div>

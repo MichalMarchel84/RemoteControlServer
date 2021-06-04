@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="flex f-between f-center underline header-color">
+<div class="flex f-between f-center underline-dark header-color">
     <div class="flex f-center">
         <img src="resources/icons/logo.svg" class="logo-icon">
         <label class="page-font f40">RC</label>

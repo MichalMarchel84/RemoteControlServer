@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: falcon
@@ -22,8 +23,8 @@
         <video autoplay id="video" class="stream"></video>
     </div>
     <div class="flex f-center page-font f20 shadow control-wrap vmt3">
-        <label id="head" data-id="${robotId}" class="control-head control-element flex f-center">${robotName}</label>
-        <label id="message" class="control-element flex f-center f-around control-msg"></label>
+        <label id="head" data-id="${robotId}" class="control-head control-element flex f-center"><c:out value="${robotName}"/></label>
+        <label id="message" class="control-element flex f-center f-around control-msg">Initializing...</label>
         <label id="disconnect" class="control-tail control-element flex f-center">
             Disconnect
         </label>
