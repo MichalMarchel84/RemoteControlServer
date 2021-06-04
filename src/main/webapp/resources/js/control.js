@@ -7,6 +7,8 @@ const configuration = {
     ]
 };
 const keysDown = [];
+const videoRatio = 0.6;
+const videoWidth = 0.7;
 let peerConnection = null;
 let stompClient = null;
 let dataChannel = null;
@@ -14,7 +16,10 @@ let stream = null;
 let timer;
 
 connect();
-document.querySelector("#disconnect").addEventListener("click", disconnect);
+document.querySelector("#disconnect").addEventListener("click", () => {
+    disconnect();
+    close();
+});
 
 function connect() {
 
@@ -60,10 +65,7 @@ function sendKeys(keys) {
 
 function disconnect() {
 
-    document.querySelector("#video").style.display = "none";
-    document.querySelector("#disconnect").style.display = "none";
     finalizePeerConnection();
-    initializePeerConnection();
 }
 
 function keyDown(e) {
@@ -127,14 +129,17 @@ function initializePeerConnection() {
     peerConnection.onconnectionstatechange = function (event) {
         switch (peerConnection.connectionState) {
             case "connected":
-                document.querySelector("#video").style.display = "block";
-                document.querySelector("#disconnect").style.display = "block";
+                const width = window.innerWidth * videoWidth;
+                const height = width * videoRatio;
+                const element = document.querySelector("#video-box");
+                element.style = "display: flex";
+                deploy(element, width, height, 500);
                 break;
             case "disconnected":
                 disconnect();
                 break;
             case "failed":
-                console.log("<<<<<<<<<Failed>>>>>>>>>>");
+                document.querySelector("#message").innerText = "Connection failed";
         }
     }
 }
@@ -150,4 +155,33 @@ function finalizePeerConnection() {
     if (peerConnection != null) peerConnection.close();
     dataChannel = null;
     peerConnection = null;
+}
+
+function deploy(element, width, height, deployTime){
+    const dt = 20;
+    const step = width/(deployTime/dt);
+    let aw = 0;
+    let ah = 0;
+    const timer = setInterval(() => {
+        if(ah < height){
+            ah += step;
+            if(ah > height) ah = height;
+        }
+        if(aw < width){
+            aw += step;
+            if(aw > width) aw = width;
+        }
+        resize(element, aw, ah);
+        if((aw === width) && (ah === height)) clearInterval(timer);
+        window.addEventListener("resize", () => {
+            const w = window.innerWidth * videoWidth;
+            const h = w * videoRatio;
+            resize(element, w, h);
+        })
+    }, dt);
+}
+
+function resize(element, width, height){
+    element.style.width = width;
+    element.style.height = height;
 }

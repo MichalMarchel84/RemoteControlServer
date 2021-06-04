@@ -16,15 +16,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
-<body style="margin: 0">
-<div class="flex f-column f-center">
-    <div class="video flex f-center f-around">
+<body class="flex f-center f-around">
+<div class="flex f-column f-center f-around">
+    <div id="video-box" class="video flex f-center f-around" style="display: none">
         <video autoplay id="video" class="stream"></video>
     </div>
-    <div class="flex f-baseline page-font f30 vmt3">
-        <label id="head" data-id="${robotId}">${robotName}</label>
-        <label id="message">Test</label>
-        <button id="disconnect" style="display: none">Disconnect</button>
+    <div class="flex f-center page-font f20 shadow control-wrap vmt3">
+        <label id="head" data-id="${robotId}" class="control-head control-element flex f-center">${robotName}</label>
+        <label id="message" class="control-element flex f-center f-around control-msg"></label>
+        <label id="disconnect" class="control-tail control-element flex f-center">
+            Disconnect
+        </label>
     </div>
 </div>
 </body>

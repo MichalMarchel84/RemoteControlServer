@@ -1,5 +1,8 @@
 body {
     background-image: linear-gradient(#cccc, #ffff);
+}
+
+.page-margin{
     margin: 5vh 5vw;
 }
 
@@ -13,6 +16,10 @@ body {
 
 .page-font {
     font-family: 'Orbitron', sans-serif;
+}
+
+.shadow{
+    box-shadow: 2px 2px 5px #606060;
 }
 
 .f15 {
@@ -116,7 +123,6 @@ body {
     padding: 0.2em 1.5em;
     border-radius: 0.5em;
     border-style: none;
-    box-shadow: 2px 2px 5px #606060;
 }
 
 .button-blue:hover {
@@ -171,11 +177,43 @@ body {
     box-shadow: 0 0 3vmin #0844a4;
     border-radius: 2vmin;
     margin: 5vh 0 2vh 0;
-    width: 1280px;
-    height: 720px;
+    width: 0;
+    height: 0;
 }
 
 .stream{
     width: 95%;
     height: 95%;
+}
+
+.control-head{
+    color: #91e4fb;
+    background-image: linear-gradient(#033076, blue, #033076);
+    border-radius: 1em 0 0 1em;
+    padding: 0 1em;
+}
+
+.control-element{
+    border: 2px solid #033076;
+    height: 2em;
+}
+
+.control-msg{
+    width: 40vw;
+}
+
+.control-tail{
+    color: #ff6624;
+    background-image: linear-gradient(#033076, blue, #033076);
+    border-radius: 0 1em 1em 0;
+    padding: 0 1em;
+    margin: 0;
+}
+
+.control-tail:hover{
+    color: #91e4fb;;
+}
+
+.control-wrap{
+    border-radius: 1em;
 }

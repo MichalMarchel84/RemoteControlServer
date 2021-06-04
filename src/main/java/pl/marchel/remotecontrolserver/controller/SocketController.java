@@ -61,7 +61,7 @@ public class SocketController {
             synchronized (robot) {
                 clientRegistry.connectWith(clientSession, robotId);
             }
-            messageService.sendToClient(clientSession, "");
+            messageService.sendToClient(clientSession, "Connecting...");
         }else {
             messageService.sendToClient(clientSession, "Robot not available");
         }

@@ -16,7 +16,7 @@
     <script src="resources/js/home.js" defer></script>
     <link rel="stylesheet" href="resources/css/style.css">
 </head>
-<body>
+<body class="page-margin">
 
 <%@include file="header.jsp" %>
 

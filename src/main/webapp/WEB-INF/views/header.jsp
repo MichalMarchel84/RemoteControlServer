@@ -27,11 +27,11 @@
         <a href="#" class="link header-color">Register</a>
 
         <sec:authorize access="!isAuthenticated()">
-            <button onclick="window.location.href='/login'" class="button-blue page-font f20 ml2">Log in</button>
+            <button onclick="window.location.href='/login'" class="button-blue shadow page-font f20 ml2">Log in</button>
         </sec:authorize>
         <sec:authorize access="isAuthenticated()">
             <form action="<c:url value="/logout"/>" method="post" style="display: inline">
-                <input type="submit" value="Log out" class="button-blue page-font f20 ml2">
+                <input type="submit" value="Log out" class="button-blue shadow page-font f20 ml2">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
         </sec:authorize>
