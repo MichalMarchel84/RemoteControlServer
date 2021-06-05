@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Anauthorized</title>
+    <title>Unauthorized</title>
 </head>
 <body>
 <h1>You are not authorized to access this page</h1>

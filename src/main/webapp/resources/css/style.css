@@ -66,6 +66,10 @@ body {
     margin-top: 3vh;
 }
 
+.vmt10{
+    margin-top: 10vh;
+}
+
 .vmv2{
     margin-top: 2vh;
     margin-bottom: 2vh;
@@ -78,6 +82,10 @@ body {
 
 .pb2{
     padding-bottom: 20px;
+}
+
+.vp5{
+    padding: 5vh 5vw;
 }
 
 .flex {
@@ -332,4 +340,17 @@ body {
 .dev-icon{
     height: 80%;
     width: auto;
+}
+
+/*-------register----------*/
+
+.text-input{
+    width: 300px;
+    height: 1.5em;
+    text-align: center;
+}
+
+.error-msg{
+    color: red;
+    text-align: center;
 }

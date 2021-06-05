@@ -24,7 +24,7 @@
         <span>|</span>
         <a href="#" class="link header-color">Download</a>
         <span>|</span>
-        <a href="#" class="link header-color">Register</a>
+        <a href="/register" class="link header-color">Register</a>
 
         <sec:authorize access="!isAuthenticated()">
             <button onclick="window.location.href='/login'" class="button-blue shadow page-font f20 ml2">Log in</button>
