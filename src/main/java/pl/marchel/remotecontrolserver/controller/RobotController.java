@@ -1,5 +1,7 @@
 package pl.marchel.remotecontrolserver.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -7,12 +9,15 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
+import pl.marchel.remotecontrolserver.model.Configuration;
 import pl.marchel.remotecontrolserver.model.Robot;
 import pl.marchel.remotecontrolserver.model.TypedMessage;
+import pl.marchel.remotecontrolserver.service.ConfigService;
 import pl.marchel.remotecontrolserver.service.MessageService;
 import pl.marchel.remotecontrolserver.service.RobotService;
-import pl.marchel.remotecontrolserver.utils.ClientRegistry;
 import pl.marchel.remotecontrolserver.utils.RobotRegistry;
+
+import java.util.List;
 
 @Controller
 public class RobotController {
@@ -21,12 +26,16 @@ public class RobotController {
     private final RobotRegistry robotRegistry;
     private final SimpMessagingTemplate template;
     private final MessageService messageService;
+    private final ConfigService configService;
+    private final ObjectMapper mapper;
 
-    public RobotController(RobotService service, RobotRegistry registry, SimpMessagingTemplate template, MessageService messageService) {
+    public RobotController(RobotService service, RobotRegistry registry, SimpMessagingTemplate template, MessageService messageService, ConfigService configService, ObjectMapper mapper) {
         this.service = service;
         this.robotRegistry = registry;
         this.template = template;
         this.messageService = messageService;
+        this.configService = configService;
+        this.mapper = mapper;
     }
 
     @SubscribeMapping("/authenticate")
@@ -47,24 +56,35 @@ public class RobotController {
         }
     }
 
+    @MessageMapping("/config")
+    public void config(@Payload List<Configuration> configurations, @Header("simpSessionId") String robotSession){
+        Robot robot = robotRegistry.getRobotBySession(robotSession);
+        var configUpdated = configService.updateConfig(configurations, robot);
+        try {
+            messageService.sendToSession("config", robotSession, mapper.writeValueAsString(configUpdated));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
     @MessageMapping("/reports")
     public void report(@Payload TypedMessage message, @Header("simpSessionId") String robotSession){
         String clientSession = robotRegistry.getConnectedWith(robotSession);
         if(clientSession != null) {
             switch (message.getType()) {
                 case "connect":
-                    messageService.sendToClient(clientSession, "Connected");
+                    messageService.sendToSession("message", clientSession, "Connected");
                     break;
                 case "disconnect":
-                    messageService.sendToClient(clientSession, "You are disconnected");
+                    messageService.sendToSession("message", clientSession, "You are disconnected");
                     robotRegistry.disconnect(robotSession);
                     break;
                 case "failed":
-                    messageService.sendToClient(clientSession, "Failed to establish connection");
+                    messageService.sendToSession("message", clientSession, "Failed to establish connection");
                     robotRegistry.disconnect(robotSession);
                     break;
                 case "timeout":
-                    messageService.sendToClient(clientSession, "Signalling timed out");
+                    messageService.sendToSession("message", clientSession, "Signalling timed out");
                     robotRegistry.disconnect(robotSession);
                     break;
             }

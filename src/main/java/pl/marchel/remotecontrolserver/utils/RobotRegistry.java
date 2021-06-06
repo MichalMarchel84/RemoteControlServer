@@ -39,7 +39,7 @@ public class RobotRegistry {
             synchronized (robot) {
                 if (robot.getConnectedWith() != null) {
                     clientRegistry.dropConnection(robot.getConnectedWith());
-                    messageService.sendToClient(robot.getConnectedWith(), "Robot disconnected - connection lost");
+                    messageService.sendToSession("message", robot.getConnectedWith(), "Robot disconnected - connection lost");
                 }
                 association.remove(robot);
                 registry.remove(sessionId);

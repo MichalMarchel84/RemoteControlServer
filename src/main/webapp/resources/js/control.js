@@ -60,7 +60,7 @@ function send(type, data) {
 }
 
 function sendKeys(keys) {
-    dataChannel.send(JSON.stringify({"keys": keys}));
+    dataChannel.send(JSON.stringify({"tag": "keys", "command": keys}));
 }
 
 function disconnect() {

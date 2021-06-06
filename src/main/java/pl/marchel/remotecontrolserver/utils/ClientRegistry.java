@@ -23,9 +23,9 @@ public class ClientRegistry {
         String robotSession = robotRegistry.getSessionId(robotId);
         Robot robot = robotRegistry.getRobotBySession(robotSession);
         if(connections.containsKey(clientSession)){
-            messageService.sendToClient(clientSession, "You have an open connection already, close it first");
+            messageService.sendToSession("message", clientSession, "You have an open connection already, close it first");
         }else if((robot == null) || (robot.getConnectedWith() != null)){
-            messageService.sendToClient(clientSession, "Robot not available");
+            messageService.sendToSession("message", clientSession, "Robot not available");
         }else {
             connections.put(clientSession, robotSession);
             robotRegistry.connect(clientSession, robotId);

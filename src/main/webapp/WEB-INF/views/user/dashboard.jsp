@@ -10,36 +10,9 @@
 <html>
 <head>
     <title>Devices</title>
-    <link rel="stylesheet" href="resources/css/style.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
-<body style="margin: 0" class="flex">
-<div class="dev-panel flex f-column page-font f30">
-    <div class="flex f-center underline-bright pb2 mb3">
-        <img src="resources/icons/user.svg" class="user-img">
-        <label><c:out value="${userName}"/></label>
-    </div>
-    <label class="dev-panel-item">
-        <div class="flex f-between f-center">
-            New device
-            <img src="resources/icons/arrow-bright.svg" class="dev-panel-icon">
-        </div>
-    </label>
-    <label class="dev-panel-item">
-        <div class="flex f-between f-center">
-            Settings
-            <img src="resources/icons/arrow-bright.svg" class="dev-panel-icon">
-        </div>
-    </label>
-    <form action="<c:url value="/logout"/>" method="post" class="dev-panel-item flex">
-        <button type="submit" class="flex f-center f-between dev-panel-logout page-font f30">
-            Log out
-            <img src="resources/icons/power.svg" class="dev-panel-icon">
-        </button>
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-    </form>
-</div>
+<body class="flex">
+<%@include file="panel.jsp"%>
 <div class="dev-content flex f-column">
     <div class="flex f-column f-center page-border vm5">
         <h2 class="page-font f30 page-color">Registered devices</h2>

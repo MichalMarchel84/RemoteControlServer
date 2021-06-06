@@ -1,7 +1,6 @@
 package pl.marchel.remotecontrolserver.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,13 +38,6 @@ public class PageController {
         robots.forEach(robot -> robot.setConnectedWith(Integer.toString(registry.status(robot.getId().toString()))));
         model.addAttribute("robots", robots);
         return "page/home";
-    }
-
-    @GetMapping("/devices")
-    public String devices(@AuthenticationPrincipal UserDetails details, Model model) {
-        model.addAttribute("robots", service.findByUser(details.getUsername()));
-        model.addAttribute("userName", details.getUsername());
-        return "user/devices";
     }
 
     @GetMapping("/control")

@@ -1,8 +1,11 @@
 package pl.marchel.remotecontrolserver.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
+import pl.marchel.remotecontrolserver.utils.ConfigurationConverter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "robots")
 @Data
@@ -19,4 +22,7 @@ public class Robot {
     private Script script;
     @Transient
     private String connectedWith;
+    @Convert(converter = ConfigurationConverter.class)
+    @Column(columnDefinition = "TEXT")
+    private List<Configuration> configurations;
 }

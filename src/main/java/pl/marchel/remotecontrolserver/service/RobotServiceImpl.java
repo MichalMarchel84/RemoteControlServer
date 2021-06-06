@@ -34,4 +34,9 @@ public class RobotServiceImpl implements RobotService{
     public List<Robot> findByUser(String userName) {
         return repository.findByOwner(userService.findByUserName(userName));
     }
+
+    @Override
+    public void save(Robot robot) {
+        repository.save(robot);
+    }
 }

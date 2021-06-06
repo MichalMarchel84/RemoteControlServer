@@ -21,16 +21,14 @@ public class MessageService {
     }
 
     public void sendStart(String robotSession){
-        TypedMessage publicMsg = new TypedMessage();
+        TypedMessage publicMsg = new TypedMessage("start", "");
         publicMsg.setType("start");
         template.convertAndSend("/channels/" + robotSession, publicMsg);
     }
 
-    public void sendToClient(String clientSession, String msg){
-        TypedMessage clientMsg = new TypedMessage();
-        clientMsg.setType("message");
-        clientMsg.setData(msg);
-        template.convertAndSend("/channels/" + clientSession, clientMsg);
+    public void sendToSession(String tag, String session, String msg){
+        TypedMessage clientMsg = new TypedMessage(tag, msg);
+        template.convertAndSend("/channels/" + session, clientMsg);
     }
 
     public void relay(String payload, String sessionId){

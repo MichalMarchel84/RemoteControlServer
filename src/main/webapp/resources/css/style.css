@@ -1,5 +1,6 @@
 body {
     background-image: linear-gradient(#cccc, #ffff);
+    margin: 0;
 }
 
 .page-margin{
