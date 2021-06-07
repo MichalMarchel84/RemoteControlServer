@@ -1,6 +1,7 @@
 package pl.marchel.remotecontrolserver.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +17,6 @@ import pl.marchel.remotecontrolserver.utils.RobotRegistry;
 import pl.marchel.remotecontrolserver.utils.Utils;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -41,7 +41,7 @@ public class PageController {
     }
 
     @GetMapping("/control")
-    public String controlPublic(@AuthenticationPrincipal Principal user, @RequestParam String id, Model model) {
+    public String controlPublic(@AuthenticationPrincipal UserDetails user, @RequestParam String id, Model model) {
         Robot robot = registry.getRobotById(id);
         if (Utils.verifyAuthorized(user, robot)) {
             model.addAttribute("robotId", id);

@@ -10,6 +10,7 @@
 <html>
 <head>
     <title>Devices</title>
+    <script src="/resources/js/user.js" defer></script>
 </head>
 <body class="flex">
 <%@include file="panel.jsp"%>
@@ -18,14 +19,14 @@
         <h2 class="page-font f30 page-color">Registered devices</h2>
         <ul id="robots" class="list-none flex f-column f20 dev-list page-font f20">
             <c:forEach items="${robots}" var="robot">
-                <li id="id${robot.id}" class="flex f-center mb3 f20">
+                <li id="id${robot.id}" class="flex f-center mb3 f20" data-status="${robot.connectedWith}">
                     <button onclick="window.open('/control?id=${robot.id}', '_blank')" class="button-robot f20 ml2">
                         <c:out value="${robot.name}"/>
                         <canvas class="lamp-red"></canvas>
                     </button>
                     <label class="underline-dark dev-list-msg flex f-center"></label>
                     <button id="info" class="dev-btn f20 mr1 blue"><img src="resources/icons/info.svg" class="dev-icon"></button>
-                    <button id="settings" onclick="window.open('/user/settings?robotId=${robot.id}')" class="dev-btn f20 mr1 orange"><img src="resources/icons/settings.svg" class="dev-icon"></button>
+                    <button id="settings" onclick="window.location.href='/user/settings?robotId=${robot.id}'" class="dev-btn f20 mr1 orange"><img src="resources/icons/settings.svg" class="dev-icon"></button>
                     <button id="delete" class="dev-btn f20 mr2 red"><img src="resources/icons/delete.svg" class="dev-icon"></button>
                 </li>
             </c:forEach>

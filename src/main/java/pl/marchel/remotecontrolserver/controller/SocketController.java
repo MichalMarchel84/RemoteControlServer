@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import pl.marchel.remotecontrolserver.model.Robot;
 import pl.marchel.remotecontrolserver.utils.RobotRegistry;
@@ -58,7 +59,7 @@ public class SocketController {
 
     @SubscribeMapping("/begin")
     public void begin(Message message,
-                      @AuthenticationPrincipal Principal user,
+                      @AuthenticationPrincipal UserDetails user,
                       @Header("simpSessionId") String clientSession,
                       @Header("robotId") String robotId) {
 

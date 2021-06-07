@@ -39,4 +39,9 @@ public class RobotServiceImpl implements RobotService{
     public void save(Robot robot) {
         repository.save(robot);
     }
+
+    @Override
+    public void delete(Robot robot) {
+        repository.delete(robot);
+    }
 }

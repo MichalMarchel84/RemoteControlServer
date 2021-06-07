@@ -10,4 +10,5 @@ public interface RobotService {
     Optional<Robot> findById(String robotId);
     List<Robot> findByUser(String userName);
     void save(Robot robot);
+    void delete(Robot robot);
 }
