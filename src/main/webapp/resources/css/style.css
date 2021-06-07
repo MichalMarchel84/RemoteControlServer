@@ -113,6 +113,10 @@ body {
     flex-direction: column;
 }
 
+.f-wrap{
+    flex-wrap: wrap;
+}
+
 .underline-dark {
     border-bottom: 2px solid #444444;
 }
@@ -354,4 +358,20 @@ body {
 .error-msg{
     color: red;
     text-align: center;
+}
+
+/*-------settings----------*/
+
+.stg-table{
+    width: 90%
+}
+
+.stg-input{
+    width: 5em;
+    text-align: center;
+}
+
+.stg-script{
+    width: 40vw;
+    height: 15em;
 }

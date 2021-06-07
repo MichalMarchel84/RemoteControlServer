@@ -38,6 +38,13 @@ public class SocketController {
         template.convertAndSend("/channels/public", "", message.getHeaders());
     }
 
+    @SubscribeMapping("/private")
+    public void subscribePrivate(@AuthenticationPrincipal Principal user, Message message, @Header("simpSessionId") String id) {
+        if(user != null) {
+            template.convertAndSend("/channels/" + user.getName(), "", message.getHeaders());
+        }
+    }
+
     @MessageMapping("/signalling")
     public void doSignalling(@Payload String payload,
                              @Header("simpSessionId") String sessionId,

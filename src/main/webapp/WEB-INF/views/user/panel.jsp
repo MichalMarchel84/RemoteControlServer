@@ -32,7 +32,7 @@
             <img src="/resources/icons/arrow-bright.svg" class="dev-panel-icon">
         </div>
     </label>
-    <label onclick="window.location.href='/user/settings'" class="dev-panel-item">
+    <label onclick="window.location.href='/user/account'" class="dev-panel-item">
         <div class="flex f-between f-center">
             Settings
             <img src="/resources/icons/arrow-bright.svg" class="dev-panel-icon">
