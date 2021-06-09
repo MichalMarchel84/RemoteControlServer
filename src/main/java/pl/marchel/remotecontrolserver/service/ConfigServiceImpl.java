@@ -21,8 +21,10 @@ public class ConfigServiceImpl implements ConfigService{
     public List<Configuration> updateConfig(List<Configuration> configs, Robot robot) {
         if(robot.getConfigurations() != null) {
             var storedConfigs = robot.getConfigurations().stream()
+                    .filter(config -> config.getName() != null)
                     .collect(Collectors.toMap(Configuration::getName,
                             config -> config.getParams().stream()
+                                    .filter(param -> param.getName() != null)
                                     .collect(Collectors.toMap(ConfigParam::getName, ConfigParam::getValue))));
 
             configs.forEach(config -> {

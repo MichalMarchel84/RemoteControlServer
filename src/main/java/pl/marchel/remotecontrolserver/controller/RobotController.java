@@ -58,6 +58,7 @@ public class RobotController {
 
     @MessageMapping("/config")
     public void config(@Payload List<Configuration> configurations, @Header("simpSessionId") String robotSession){
+        System.out.println(configurations);
         Robot robot = robotRegistry.getRobotBySession(robotSession);
         var configUpdated = configService.updateConfig(configurations, robot);
         try {

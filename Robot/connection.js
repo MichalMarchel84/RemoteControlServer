@@ -1,4 +1,6 @@
+// const robotId = 1;
 const robotId = 3;
+// const password = "123456";
 const password = "$2a$10$xADu7szZCW1I./nr8zXOLeWZrdVHEdOB/2WGcmid3I7NLzzUpjNwO";
 
 // const host = 'http://192.168.1.12:8080/endpoint'
@@ -14,15 +16,17 @@ const configuration = {
         {url: 'stun:stun3.l.google.com:19302'}
     ]
 };
-const videoConfig = {
-    "name": "Video configuration",
-    "params": [
-        {"name": "width", "value": "1200"},
-        {"name": "height", "value": "720"},
-        {"name": "frame rate", "value": "10"}
-    ]
-}
-let nativeConfig = [videoConfig];
+let nativeConfig = [
+    {
+        "name": "Video configuration",
+        "params": [
+            {"name": "width", "value": "1200"},
+            {"name": "height", "value": "720"},
+            {"name": "frame rate", "value": "10"}
+        ]
+    }
+];
+let coreConfig = null;
 let stompClient = null;
 let peerConnection = null;
 let dataChannel = null;
@@ -33,8 +37,8 @@ connect();
 
 //-------------Signalling----------------
 
-function sendConfig() {
-    stompClient.send(configHost, {}, JSON.stringify(nativeConfig));
+function sendConfig(cfgs) {
+    stompClient.send(configHost, {}, JSON.stringify(cfgs));
 }
 
 function connect() {
@@ -50,6 +54,9 @@ function connect() {
                     onMessage(JSON.parse(msg.body));
                 },
                 {"robotId": robotId, "robotPass": password});
+            setTimeout(() => {
+                sendConfig(nativeConfig.concat(coreConfig));
+            }, 1000);
         }, function () {
         logCore("Failed to connect to signalling server");
             finalizePeerConnection();
@@ -92,7 +99,9 @@ function onMessage(msg) {
             timeout = setTimeout(disconnect, 10000);
             break
         case "config":
-            notifyCore(msg);
+            const cfgs = JSON.parse(msg.data);
+            nativeConfig = cfgs.slice(0, nativeConfig.length);
+            window.setCoreConfig(cfgs.slice(nativeConfig.length));
             break;
     }
 }
@@ -151,12 +160,12 @@ async function startVideo() {
     const constraints = {
         audio: false,
         video: {
-            // width: videoConfig.params[0].value,
-            // height: videoConfig.params[0].value,
-            // frameRate: videoConfig.params[0].value
-            width: 1200,
-            height: 720,
-            frameRate: 10
+            width: parseInt(nativeConfig[0].params[0].value, 10),
+            height: parseInt(nativeConfig[0].params[1].value, 10),
+            frameRate: parseInt(nativeConfig[0].params[2].value, 10)
+            // width: 1200,
+            // height: 720,
+            // frameRate: 10
         }
     };
     stream = await navigator.mediaDevices.getUserMedia(constraints);
