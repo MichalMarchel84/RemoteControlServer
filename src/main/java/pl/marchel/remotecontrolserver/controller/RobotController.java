@@ -58,13 +58,13 @@ public class RobotController {
 
     @MessageMapping("/config")
     public void config(@Payload List<Configuration> configurations, @Header("simpSessionId") String robotSession){
-        System.out.println(configurations);
         Robot robot = robotRegistry.getRobotBySession(robotSession);
-        var configUpdated = configService.updateConfig(configurations, robot);
-        try {
-            messageService.sendToSession("config", robotSession, mapper.writeValueAsString(configUpdated));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        if(robot != null) {
+            var configUpdated = configService.updateConfig(configurations, robot);
+            robot.setConfigurations(configUpdated);
+            try {
+                messageService.sendToSession("config", robotSession, mapper.writeValueAsString(configUpdated));
+            } catch (JsonProcessingException e) {}
         }
     }
 

@@ -7,23 +7,59 @@ const configuration = {
     ]
 };
 const keysDown = [];
-const videoRatio = 0.6;
-const videoWidth = 0.7;
+let videoRatio = 0.6;
+let videoWidth = 0.7;
 let peerConnection = null;
 let stompClient = null;
 let dataChannel = null;
 let stream = null;
 let timer;
 
+init();
 connect();
-document.querySelector("#disconnect").addEventListener("click", () => {
-    disconnect();
-    close();
-});
+
+function init(){
+    let videoConfig = null;
+    let keyConfig = null;
+    configs.forEach(cfg => {
+        if(cfg.name === "Video configuration"){
+            videoConfig = cfg;
+        }else if(cfg.name === "Keyboard"){
+            keyConfig = cfg;
+        }
+    });
+    if(videoConfig != null){
+        let width = null;
+        let height = null;
+        videoConfig.params.forEach(param => {
+            if(param.name === "width") width = param.value;
+            else if(param.name === "height") height = param.value;
+        });
+        videoRatio = height/width;
+    }
+    if(keyConfig != null){
+        const list = document.querySelector("#info-list");
+        keyConfig.params.forEach(param => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${param.value}</td><td>${param.name}</td>`;
+            tr.className = "f20";
+            list.append(tr);
+        });
+    }
+    document.querySelector("#info").addEventListener("click", () => {
+        document.querySelector("#info-cont").style = "display: flex";
+    });
+    document.querySelector("#close").addEventListener("click", () => {
+        document.querySelector("#info-cont").style = "display: none";
+    });
+    document.querySelector("#disconnect").addEventListener("click", () => {
+        disconnect();
+        close();
+    });
+}
 
 function connect() {
 
-    const id = document.querySelector("#head").dataset.id;
     const socket = new SockJS('/endpoint');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
@@ -32,7 +68,7 @@ function connect() {
             function (msg) {
                 onMessage(JSON.parse(msg.body));
             },
-            {"robotId": id});
+            {"robotId": robotId});
     });
     initializePeerConnection();
 }
@@ -68,13 +104,13 @@ function disconnect() {
 }
 
 function keyDown(e) {
-    const i = keysDown.indexOf(e.key);
-    if (i === -1) keysDown.push(e.key);
+    const i = keysDown.indexOf(e.key.toLowerCase());
+    if (i === -1) keysDown.push(e.key.toLowerCase());
     sendKeys(keysDown);
 }
 
 function keyUp(e) {
-    const i = keysDown.indexOf(e.key);
+    const i = keysDown.indexOf(e.key.toLowerCase());
     if (i > -1) keysDown.splice(i, 1);
     sendKeys(keysDown);
 };
@@ -128,8 +164,12 @@ function initializePeerConnection() {
     peerConnection.onconnectionstatechange = function (event) {
         switch (peerConnection.connectionState) {
             case "connected":
-                const width = window.innerWidth * videoWidth;
-                const height = width * videoRatio;
+                let width = window.innerWidth * videoWidth;
+                let height = width * videoRatio;
+                if(height > window.innerHeight*0.8){
+                    height = window.innerHeight*0.8;
+                    width = height/videoRatio;
+                }
                 const element = document.querySelector("#video-box");
                 element.style = "display: flex";
                 deploy(element, width, height, 500);
@@ -173,8 +213,12 @@ function deploy(element, width, height, deployTime){
         resize(element, aw, ah);
         if((aw === width) && (ah === height)) clearInterval(timer);
         window.addEventListener("resize", () => {
-            const w = window.innerWidth * videoWidth;
-            const h = w * videoRatio;
+            let w = window.innerWidth * videoWidth;
+            let h = w * videoRatio;
+            if(h > window.innerHeight*0.8){
+                h = window.innerHeight*0.8;
+                w = h/videoRatio;
+            }
             resize(element, w, h);
         })
     }, dt);

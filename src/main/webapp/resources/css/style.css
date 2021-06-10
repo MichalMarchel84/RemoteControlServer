@@ -19,6 +19,10 @@ body {
     font-family: 'Orbitron', sans-serif;
 }
 
+.text-font{
+    font-family: "Arial", sans-serif;
+}
+
 .shadow{
     box-shadow: 2px 2px 5px #606060;
 }
@@ -255,6 +259,26 @@ body {
 
 .control-wrap{
     border-radius: 1em;
+}
+
+.control-info-btn{
+    position: absolute;
+    font-size: 4vh;
+    right: 10px;
+    top: 10px;
+}
+
+.control-info-panel{
+    position: absolute;
+    width: 50vw;
+    height: 90vh;
+    margin: 0 auto;
+    top: 5vh;
+    background-image: linear-gradient(#ccccccf0, #fffffff0);
+}
+
+.text-center{
+    text-align: center;
 }
 
 /*--------devices----------*/

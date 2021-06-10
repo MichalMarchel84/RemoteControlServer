@@ -28,10 +28,10 @@ public class ConfigServiceImpl implements ConfigService{
                                     .collect(Collectors.toMap(ConfigParam::getName, ConfigParam::getValue))));
 
             configs.forEach(config -> {
-                if (storedConfigs.containsKey(config.getName())) {
+                if ((config.getName() != null) && storedConfigs.containsKey(config.getName())) {
                     var storedParams = storedConfigs.get(config.getName());
                     config.getParams().forEach(param -> {
-                        if (storedParams.containsKey(param.getName())) {
+                        if ((param.getName() != null) && storedParams.containsKey(param.getName())) {
                             param.setValue(storedParams.get(param.getName()));
                         }
                     });

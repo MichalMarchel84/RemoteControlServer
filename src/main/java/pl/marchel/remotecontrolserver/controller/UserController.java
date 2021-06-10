@@ -87,6 +87,7 @@ public class UserController {
         if(robotSession != null){
             try {
                 messageService.sendToSession("config", robotSession, mapper.writeValueAsString(robot.getConfigurations()));
+                robotRegistry.getRobotBySession(robotSession).setConfigurations(robot.getConfigurations());
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

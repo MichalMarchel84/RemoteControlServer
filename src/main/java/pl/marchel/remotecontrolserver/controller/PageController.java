@@ -1,5 +1,7 @@
 package pl.marchel.remotecontrolserver.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -25,11 +27,13 @@ public class PageController {
     private final RobotService service;
     private final RobotRegistry registry;
     private final UserService users;
+    private final ObjectMapper mapper;
 
-    public PageController(RobotService service, RobotRegistry registry, UserService users) {
+    public PageController(RobotService service, RobotRegistry registry, UserService users, ObjectMapper mapper) {
         this.service = service;
         this.registry = registry;
         this.users = users;
+        this.mapper = mapper;
     }
 
     @GetMapping("/home")
@@ -46,6 +50,9 @@ public class PageController {
         if (Utils.verifyAuthorized(user, robot)) {
             model.addAttribute("robotId", id);
             model.addAttribute("robotName", robot.getName());
+            try {
+                model.addAttribute("configs", mapper.writeValueAsString(robot.getConfigurations()));
+            } catch (JsonProcessingException e) {}
             Script script = robot.getScript();
             if ((script == null) || (script.equals(""))) model.addAttribute("script", "src=resources/js/control.js");
             else model.addAttribute("script", script.getScript());

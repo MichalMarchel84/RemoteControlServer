@@ -2,7 +2,6 @@
 const robotId = 3;
 // const password = "123456";
 const password = "$2a$10$xADu7szZCW1I./nr8zXOLeWZrdVHEdOB/2WGcmid3I7NLzzUpjNwO";
-
 // const host = 'http://192.168.1.12:8080/endpoint'
 const host = 'https://remote-control-project.herokuapp.com/endpoint'
 const signallingHost = "/app/signalling";
@@ -32,6 +31,7 @@ let peerConnection = null;
 let dataChannel = null;
 let stream = null;
 let timeout = null;
+let testRunTimeout = null;
 
 connect();
 
@@ -148,9 +148,14 @@ function onConnect() {
     clearTimeout(timeout);
     report("connect", "");
     logCore("Client connected");
+    setTimeout(() => disconnect(), 300000);
 }
 
 function disconnect() {
+    if(testRunTimeout != null){
+        clearTimeout(testRunTimeout);
+        testRunTimeout = null;
+    }
     report("disconnect", "");
     finalizePeerConnection();
     logCore("Client disconnected");
@@ -163,9 +168,6 @@ async function startVideo() {
             width: parseInt(nativeConfig[0].params[0].value, 10),
             height: parseInt(nativeConfig[0].params[1].value, 10),
             frameRate: parseInt(nativeConfig[0].params[2].value, 10)
-            // width: 1200,
-            // height: 720,
-            // frameRate: 10
         }
     };
     stream = await navigator.mediaDevices.getUserMedia(constraints);
