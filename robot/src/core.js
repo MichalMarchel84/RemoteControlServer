@@ -1,3 +1,8 @@
+const LEFT_MOTOR_1 = 26;
+const LEFT_MOTOR_2 = 19;
+const RIGHT_MOTOR_1 = 20;
+const RIGHT_MOTOR_2 = 16;
+
 const puppeteer = require('puppeteer-core');
 const resolve = require('path').resolve;
 const url = "file://" + resolve('main.html');
@@ -74,8 +79,8 @@ class Motor {
     }
 }
 
-const leftMotor = new Motor(26, 19);
-const rightMotor = new Motor(20, 16);
+const leftMotor = new Motor(LEFT_MOTOR_1, LEFT_MOTOR_2);
+const rightMotor = new Motor(RIGHT_MOTOR_1, RIGHT_MOTOR_2);
 
 function handleKeys(keys) {
     const command = [0, 0];

@@ -22,7 +22,7 @@
     <div class="page-font f20">
         <a href="/home" class="link header-color">Home</a>
         <span>|</span>
-        <a href="#" class="link header-color">Download</a>
+        <a href="/download" class="link header-color">Download</a>
         <span>|</span>
         <a href="/register" class="link header-color">Register</a>
         <sec:authorize access="isAuthenticated()">

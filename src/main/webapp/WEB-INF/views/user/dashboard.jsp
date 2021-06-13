@@ -10,6 +10,8 @@
 <html>
 <head>
     <title>Devices</title>
+    <script src="resources/js/sockjs-0.3.4.js"></script>
+    <script src="resources/js/stomp.js"></script>
     <script src="/resources/js/user.js" defer></script>
 </head>
 <body class="flex">

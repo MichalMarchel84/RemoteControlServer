@@ -87,4 +87,7 @@ public class PageController {
     public String login() {
         return "page/login";
     }
+
+    @GetMapping("/download")
+    public String download() {return "page/download"; }
 }

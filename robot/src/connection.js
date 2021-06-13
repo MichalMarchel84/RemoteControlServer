@@ -1,9 +1,5 @@
-// const robotId = 1;
-const robotId = 3;
-// const password = "123456";
-const password = "$2a$10$xADu7szZCW1I./nr8zXOLeWZrdVHEdOB/2WGcmid3I7NLzzUpjNwO";
 // const host = 'http://192.168.1.12:8080/endpoint'
-const host = 'https://remote-control-project.herokuapp.com/endpoint'
+const host = 'https://remote-control-project.herokuapp.com/endpoint';
 const signallingHost = "/app/signalling";
 const reportingHost = "/app/reports";
 const configHost = "/app/config";
@@ -148,7 +144,10 @@ function onConnect() {
     clearTimeout(timeout);
     report("connect", "");
     logCore("Client connected");
-    setTimeout(() => disconnect(), 300000);
+    setTimeout(() => {
+        logCore("test run timeout");
+        disconnect()
+    }, 300000);
 }
 
 function disconnect() {

@@ -22,7 +22,7 @@
     </div>
     <label onclick="window.location.href='/user'" class="dev-panel-item">
         <div class="flex f-between f-center">
-            Dashboard
+            Devices
             <img src="/resources/icons/arrow-bright.svg" class="dev-panel-icon">
         </div>
     </label>

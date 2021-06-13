@@ -51,6 +51,7 @@ public class RobotController {
             if (robot.getPassword().equals(pass)) {
                 robotRegistry.register(sessionId, robot);
                 if(robot.getOwner().getId() == 1)messageService.sendPublic(robot.getId().toString(), 1);
+                messageService.sendStatusToClient(robot.getOwner().getUsername(), robot.getId().toString(), 1);
                 template.convertAndSend("/channels/" + sessionId, "", message.getHeaders());
             }
         }

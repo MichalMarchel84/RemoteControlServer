@@ -1,6 +1,6 @@
 let stompClient = null;
 
-initializeList();
+init();
 connect();
 
 function connect() {
@@ -12,6 +12,8 @@ function connect() {
         stompClient.subscribe('/app/public', function (msg) {
             onMessage(JSON.parse(msg.body));
         });
+    }, function () {
+        window.setTimeout(connect, 3000);
     });
 }
 
@@ -21,11 +23,16 @@ function onMessage(msg) {
     }
 }
 
-function initializeList(){
+function init(){
     const list = document.querySelector("#robots");
     for (let i = 0; i < list.children.length; i++) {
         setStatus(list.children[i], list.children[i].querySelector("label").innerText);
     }
+    document.querySelector("#art1").addEventListener("click", () => {
+        const art = document.querySelector("#art1cont");
+        if(art.style.display === "none") art.style.display = "flex";
+        else art.style.display = "none";
+    })
 }
 
 function updateList(message) {

@@ -73,6 +73,7 @@ public class RobotRegistry {
         if(robot.getConnectedWith() != null) {
             clientRegistry.dropConnection(robot.getConnectedWith());
             if(robot.getOwner().getUsername().equals("admin")) messageService.sendPublic(robot.getId().toString(), 1);
+            messageService.sendStatusToClient(robot.getOwner().getUsername(), robot.getId().toString(), 1);
         }
         robot.setConnectedWith(null);
     }
@@ -81,6 +82,7 @@ public class RobotRegistry {
         Robot robot = registry.get(robotSession);
         if((robot != null) && (robot.getConnectedWith() != null)) {
             if(robot.getOwner().getId() == 1) messageService.sendPublic(robot.getId().toString(), 1);
+            messageService.sendStatusToClient(robot.getOwner().getUsername(), robot.getId().toString(), 1);
             robot.setConnectedWith(null);
         }
     }

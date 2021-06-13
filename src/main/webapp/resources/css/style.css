@@ -1,5 +1,5 @@
 body {
-    background-image: linear-gradient(#cccc, #ffff);
+    background-image: linear-gradient(#cccc, #ffff 80vh);
     margin: 0;
 }
 
@@ -21,6 +21,7 @@ body {
 
 .text-font{
     font-family: "Arial", sans-serif;
+    text-shadow: 1px 1px 2px #7a7a7a;
 }
 
 .shadow{
@@ -53,6 +54,10 @@ body {
 
 .ml2 {
     margin-left: 20px
+}
+
+.ml5 {
+    margin-left: 50px;
 }
 
 .mr1{
@@ -211,6 +216,28 @@ body {
     background-image: radial-gradient(closest-side, blue 80%, black 90%, transparent);
     width: 1em;
     height: 1em;
+}
+
+.article-head{
+    color: #444444;
+    margin-left: 10px;
+}
+
+.article-head:hover{
+    background-image: linear-gradient(90deg, transparent, #0844a4e0 5% 10%, transparent 50%);
+    color: #ff6624;
+    text-shadow: 0 0 3px white;
+    cursor: default;
+}
+
+.article-body{
+    margin: 5vh 5vw;
+    padding: 5vh 5vw;
+}
+
+.img-wide{
+    width: 100%;
+    height: auto;
 }
 
 /*--------Control----------*/

@@ -23,9 +23,17 @@
                     Robot name:
                     <form:input path="name" cssClass="f20 ml2 text-input"/>
                 </label>
-                <label class="f20 page-font">Id: ${robot.id}</label>
+                <table>
+                    <tr>
+                        <td class="f20 page-font page-color">Robot id:</td>
+                        <td class="text-font f20" style="color: black">${robot.id}</td>
+                    </tr>
+                    <tr>
+                        <td class="f20 page-font page-color">Password:</td>
+                        <td class="text-font f15" style="color: black">${robot.password}</td>
+                    </tr>
+                </table>
                 <form:hidden path="id"/>
-                <label class="f20 page-font">Password: ${robot.password}</label>
             </div>
             <ul id="cfg" class="list-none flex f-column f20 dev-list page-font f20">
                 <c:forEach items="${robot.configurations}" var="config" varStatus="i">

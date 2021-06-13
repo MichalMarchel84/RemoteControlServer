@@ -31,6 +31,7 @@ public class ClientRegistry {
             robotRegistry.connect(clientSession, robotId);
             messageService.sendStart(robotSession);
             if(robot.getOwner().getId() == 1) messageService.sendPublic(robotId, 2);
+            messageService.sendStatusToClient(robot.getOwner().getUsername(), robotId, 2);
         }
     }
 

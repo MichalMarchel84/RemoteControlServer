@@ -26,6 +26,7 @@ public class UserDisconnectedListener implements ApplicationListener<SessionDisc
             if(robot.getOwner().getId() == 1){
                 messageService.sendPublic(robot.getId().toString(), 0);
             }
+            messageService.sendStatusToClient(robot.getOwner().getUsername(), robot.getId().toString(), 0);
         }
     }
 }
