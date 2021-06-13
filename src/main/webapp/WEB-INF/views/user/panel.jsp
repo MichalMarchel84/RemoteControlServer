@@ -32,9 +32,15 @@
             <img src="/resources/icons/arrow-bright.svg" class="dev-panel-icon">
         </div>
     </label>
+    <label onclick="window.location.href='/user/scripts'" class="dev-panel-item">
+        <div class="flex f-between f-center">
+            Scripts
+            <img src="/resources/icons/arrow-bright.svg" class="dev-panel-icon">
+        </div>
+    </label>
     <label class="dev-panel-item">
         <div class="flex f-between f-center">
-            Settings
+            Account
             <img src="/resources/icons/arrow-bright.svg" class="dev-panel-icon">
         </div>
     </label>

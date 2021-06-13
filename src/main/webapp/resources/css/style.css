@@ -68,6 +68,10 @@ body {
     margin-right: 20px;
 }
 
+.mr5{
+    margin-right: 50px;
+}
+
 .vm5 {
     margin: 5vh 5vw;
 }
@@ -120,6 +124,10 @@ body {
 
 .f-column {
     flex-direction: column;
+}
+
+.f-column-reverse{
+    flex-direction: column-reverse;
 }
 
 .f-wrap{
@@ -313,7 +321,7 @@ body {
 .dev-panel{
     background-image: linear-gradient(#091f59 30%, white);
     width: 20vw;
-    height: 100vh;
+    min-height: 100vh;
     padding: 20px;
     color: #91e4fb;
 }
@@ -425,4 +433,10 @@ body {
 .stg-script{
     width: 40vw;
     height: 15em;
+}
+
+/*---------scripts----------*/
+
+.script-name{
+    padding: 0.2em 0.5em;
 }

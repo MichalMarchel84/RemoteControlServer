@@ -90,4 +90,9 @@ public class PageController {
 
     @GetMapping("/download")
     public String download() {return "page/download"; }
+
+    @GetMapping("/robot-articles")
+    public String showRobotArticle(@RequestParam String name){
+        return "page/articles/" + name;
+    }
 }

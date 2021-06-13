@@ -44,6 +44,9 @@
                 <ul id="robots" class="list-none flex f-column">
                     <c:forEach items="${robots}" var="robot">
                         <li id="id${robot.id}" class="flex f-center mb3 f20">
+                            <a href="/robot-articles?name=${robot.name.replaceAll(" ", "-").toLowerCase()}" class="dev-btn f20 mr1 blue">
+                                <img src="resources/icons/info.svg" class="dev-icon">
+                            </a>
                             <button onclick="window.open('/control?id=${robot.id}', '_blank')" class="button-robot f20">
                                 <c:out value="${robot.name}"/>
                                 <canvas class="lamp-red"></canvas>
