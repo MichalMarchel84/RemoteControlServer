@@ -113,13 +113,13 @@
         <span class="page-font f30 ml2">How this service works?</span>
     </div>
     <div id="art2cont" class="article-body page-border flex f-column text-font f20" style="display: none">
-        <h2>Overview</h2>
+        <h2>Establishing connection</h2>
         <p>
             Here is a quick overview of what's going on under the hood when you click a button with robot name:
         <ol>
             <li>
                 By clicking the button, you send GET request to "/control" context with "id" parameter set to id of
-                robot you want to connect with. Service verifies if it is ok to connect (robot is in "ready" state and
+                robot you want to connect with. Service verifies if it is ok to connect (robot is in "Ready" state and
                 you are authorized to control it) and, if so, responds sending an HTML page equipped with browser
                 control script which is assigned to this robot (here we assume that it is a default script, you can
                 find more about assigning scripts in "Customization" section).
@@ -128,22 +128,50 @@
                 As the page is loaded, it displays "Initializing..." message. Script connects to "/endpoint" context
                 with WebSocket (using STOMP over SockJS), and, when connection is established, sends SUBSCRIBE message
                 to "/app/begin", appending robot id in "robotId" header. Once again service checks if connection can be
-                established and responds with a message in format {"type":"message","data":**message text**} (message
+                established and responds with a message in format {"type":"message","data":"**message text**"} (message
                 text depends on the result of verification). Script display this message on the page. If it is ok to
                 connect, service registers connection and sends "start" message to robot in format
-                {"type":"start","data":""}.
+                {"type":"start","data":""}. Robot status in "Devices" panel changes to "In use".
             </li><br/>
             <li>
-                When robot receives "start" message, it starts establishing WebRTC connection. I don't want to get too
+                When robot receives "start" message, it initiates establishing WebRTC connection. I don't want to get too
                 much in details about WebRTC connection establishing. It is quite a long story, and is already well
                 described on other pages (ie. <a href="https://www.baeldung.com/webrtc" target="_blank">here</a>).
                 What is important in this scope, is that both robot and browser script exchanges signalling metadata
-                through "/app/signalling" context, sending messages in format<br/>
-                {"type":**type of message**,"data":**message payload**}<br/>
-                with header {"caller": "robot"} or {"caller": "user"} respectively.
+                through "/app/signalling" context, sending messages in format<br/><br/>
+                {"type":"**type of message**","data":"**message payload**"}<br/><br/>
+                with header {"caller": "robot"} or {"caller": "user"} respectively. Service simply relaying this
+                messages to their destination.
+            </li><br/>
+            <li>
+                Now - if everything went well - browser script and robot are connected directly peer-to-peer. Robot
+                is streaming video from it's camera and browser script relays keyboard and mouse inputs to robot
+                through WebRTC datachannel. At this point, robot notifies service sending
+                {"type":"connect","data":"Connected"} to "/app/reports" and service relays it to browser script
+                as {"type":"message","data":"Connected"}
+                - message on page changes to "Connected"
             </li>
-        </ol>
+        </ol><br/><br/>
+        When WebRTC connection gets closed, robot sends
+        {"type":"disconnect","data":"**message to be displayed on page**"} to "/app/reports". Service removes
+        connection from registry, robot status in "Devices" panel changes to "Ready"
         </p>
+        <h2>Robot authentication</h2>
+        <p>
+            When robot program starts, it connects to "/endpoint" context via WebSocket and sends SUBSCRIBE message
+            to "/app/authenticate", passing it's id and password from "identity.js" file in message headers "robotId"
+            and "robotPass". If verification ends with success, robot is registered and accessible. Status in "Devices"
+            panel changes to "Ready".<br/><br/>
+            If robot's WebSocket gets closed, service removes robot from registry. Robot status in "Devices" panel
+            changes to "Offline"
+        </p>
+    </div>
+    <div id="art3" class="flex f-center article-head">
+        <img src="/resources/icons/arrow-down-dark.svg" class="dev-panel-icon f30"/>
+        <span class="page-font f30 ml2">Customization</span>
+    </div>
+    <div id="art3cont" class="article-body page-border flex f-column text-font f20" style="display: none">
+        <h2>Section in production...</h2>
     </div>
 </div>
 

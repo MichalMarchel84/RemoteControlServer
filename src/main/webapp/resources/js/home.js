@@ -30,6 +30,7 @@ function init(){
     }
     setArticle("art1", "art1cont");
     setArticle("art2", "art2cont");
+    setArticle("art3", "art3cont");
 }
 
 function setArticle(artName, bodyName){

@@ -22,7 +22,7 @@
         <form method="post" action="/login" class="flex f-column">
             <input type="text" name="username" value="${fn:escapeXml(username)}" placeholder="User name" class="mb3 text-input f20">
             <input type="password" name="password" placeholder="Password" class="mb3 text-input f20">
-            <input type="submit" class="button-blue page-font f20 shadow">
+            <input type="submit" value="Submit" class="button-blue page-font f20 shadow">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
         <label class="error-msg page-font f15">

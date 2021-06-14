@@ -25,7 +25,7 @@
             <form:password path="password" placeholder="Password" cssClass="mb3 text-input f20"/>
             <span class="error-msg page-font">${repeatError}</span>
             <input type="password" name="repeat" placeholder="Repeat password" class="mb3 text-input f20">
-            <input type="submit" class="button-blue page-font f20 shadow">
+            <input type="submit" value="Submit" class="button-blue page-font f20 shadow">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form:form>
     </div>
