@@ -16,10 +16,18 @@
 <table class="text-font f30 vmv2" cellspacing="20">
     <tr>
         <td>
+            Default browser control script
+        </td>
+        <td>
+            <a href="/resources/js/control.js" download><img src="/resources/icons/download.png" class="dev-panel-icon"></a>
+        </td>
+    </tr>
+    <tr>
+        <td>
             Program for tracked robot
         </td>
         <td>
-            <a href="/tracked_robot.zip"><img src="/resources/icons/download.png" class="dev-panel-icon"></a>
+            <a href="/tracked_robot.zip" download><img src="/resources/icons/download.png" class="dev-panel-icon"></a>
         </td>
     </tr>
 </table>

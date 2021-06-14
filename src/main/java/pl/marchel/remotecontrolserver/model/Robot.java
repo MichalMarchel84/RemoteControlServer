@@ -1,7 +1,6 @@
 package pl.marchel.remotecontrolserver.model;
 
 import lombok.Data;
-import org.hibernate.annotations.Type;
 import pl.marchel.remotecontrolserver.utils.ConfigurationConverter;
 
 import javax.persistence.*;
@@ -18,7 +17,7 @@ public class Robot {
     private String password;
     @ManyToOne(fetch = FetchType.EAGER)
     private User owner;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Script script;
     @Transient
     private String connectedWith;

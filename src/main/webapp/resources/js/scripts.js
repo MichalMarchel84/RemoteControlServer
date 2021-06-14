@@ -10,6 +10,8 @@ function deleteScript(id){
             {}).then(resp => {
             if(resp.ok){
                 document.querySelector("#id" + id).remove();
+            }else{
+                alert("Cannot delete script when it is assigned to a device. Unassign it first")
             }
         })
     }

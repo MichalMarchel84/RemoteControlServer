@@ -20,6 +20,7 @@ import pl.marchel.remotecontrolserver.utils.Utils;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PageController {
@@ -46,17 +47,22 @@ public class PageController {
 
     @GetMapping("/control")
     public String controlPublic(@AuthenticationPrincipal UserDetails user, @RequestParam String id, Model model) {
-        Robot robot = registry.getRobotById(id);
-        if (Utils.verifyAuthorized(user, robot)) {
-            model.addAttribute("robotId", id);
-            model.addAttribute("robotName", robot.getName());
-            try {
-                model.addAttribute("configs", mapper.writeValueAsString(robot.getConfigurations()));
-            } catch (JsonProcessingException e) {}
-            Script script = robot.getScript();
-            if ((script == null) || (script.getScript().trim().isEmpty())) model.addAttribute("script", "src=resources/js/control.js");
-            else model.addAttribute("scriptCont", script.getScript());
-            return "control";
+        Optional<Robot> ro = service.findById(id);
+        if(ro.isPresent()) {
+            Robot robot = ro.get();
+            if (Utils.verifyAuthorized(user, robot)) {
+                model.addAttribute("robotId", id);
+                model.addAttribute("robotName", robot.getName());
+                try {
+                    model.addAttribute("configs", mapper.writeValueAsString(robot.getConfigurations()));
+                } catch (JsonProcessingException e) {
+                }
+                Script script = robot.getScript();
+                if ((script == null) || (script.getScript().trim().isEmpty()))
+                    model.addAttribute("script", "src=resources/js/control.js");
+                else model.addAttribute("scriptCont", script.getScript());
+                return "control";
+            }
         }
         return "error/unavailable";
     }
