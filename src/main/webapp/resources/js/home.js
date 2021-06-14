@@ -28,11 +28,23 @@ function init(){
     for (let i = 0; i < list.children.length; i++) {
         setStatus(list.children[i], list.children[i].querySelector("label").innerText);
     }
-    document.querySelector("#art1").addEventListener("click", () => {
-        const art = document.querySelector("#art1cont");
-        if(art.style.display === "none") art.style.display = "flex";
-        else art.style.display = "none";
-    })
+    setArticle("art1", "art1cont");
+    setArticle("art2", "art2cont");
+}
+
+function setArticle(artName, bodyName){
+    const head = document.querySelector("#" + artName);
+    head.addEventListener("click", () => {
+        const body = document.querySelector("#" + bodyName);
+        if(body.style.display === "none") {
+            body.style.display = "flex";
+            head.querySelector("img").style.transform = "rotate(-90deg)";
+        }
+        else {
+            body.style.display = "none";
+            head.querySelector("img").style.transform = "";
+        }
+    });
 }
 
 function updateList(message) {

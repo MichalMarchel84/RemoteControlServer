@@ -23,9 +23,9 @@ public class MessageService {
     }
 
     public void sendStart(String robotSession){
-        TypedMessage publicMsg = new TypedMessage("start", "");
-        publicMsg.setType("start");
-        template.convertAndSend("/channels/" + robotSession, publicMsg);
+        TypedMessage startMsg = new TypedMessage("start", "");
+        startMsg.setType("start");
+        template.convertAndSend("/channels/" + robotSession, startMsg);
     }
 
     public void sendToSession(String tag, String session, String msg){

@@ -236,9 +236,9 @@ body {
 }
 
 .article-head:hover{
-    background-image: linear-gradient(90deg, transparent, #0844a4e0 5% 10%, transparent 50%);
-    color: #ff6624;
-    text-shadow: 0 0 3px white;
+    background-image: linear-gradient(90deg, transparent, #0844a450 5% 20%, transparent 80%);
+    color: #ff4424;
+    text-shadow: 0 0 3px black;
     cursor: default;
 }
 
