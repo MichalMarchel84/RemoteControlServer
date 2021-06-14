@@ -16,7 +16,7 @@
         const robotId = ${robotId};
         const configs = ${configs};
     </script>
-    <script ${script} defer></script>
+    <script ${script} defer>${scriptCont}</script>
     <link rel="stylesheet" href="resources/css/style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">

@@ -54,8 +54,8 @@ public class PageController {
                 model.addAttribute("configs", mapper.writeValueAsString(robot.getConfigurations()));
             } catch (JsonProcessingException e) {}
             Script script = robot.getScript();
-            if ((script == null) || (script.equals(""))) model.addAttribute("script", "src=resources/js/control.js");
-            else model.addAttribute("script", script.getScript());
+            if ((script == null) || (script.getScript().trim().isEmpty())) model.addAttribute("script", "src=resources/js/control.js");
+            else model.addAttribute("scriptCont", script.getScript());
             return "control";
         }
         return "error/unavailable";

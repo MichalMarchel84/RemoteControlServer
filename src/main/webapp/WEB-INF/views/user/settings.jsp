@@ -55,12 +55,15 @@
                 </c:forEach>
             </ul>
             <div class="flex f-between">
-<%--                <label class="flex f-center f-column page-font f20 page-color">--%>
-<%--                    Custom script--%>
-<%--                    <form:textarea path="script" cssClass="stg-script"/>--%>
-<%--                </label>--%>
+                <div class="flex f-column f-center">
+                    <label class="page-color page-font f20">Browser control script</label>
+                    <form:select path="script" cssClass="f15 vmv2 p1">
+                        <form:option value="">default</form:option>
+                        <form:options items="${scripts}" itemLabel="name"/>
+                    </form:select>
+                </div>
                 <div class="flex f-column f-around">
-                    <button type="submit" class="button-blue f30 shadow page-font">Save</button>
+                    <button type="submit" class="button-blue f20 shadow page-font">Save</button>
                 </div>
             </div>
         </form:form>

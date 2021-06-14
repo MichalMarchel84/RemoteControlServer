@@ -70,6 +70,7 @@ public class UserController {
     @GetMapping("/settings")
     public String robotSettings(@AuthenticationPrincipal UserDetails user, @RequestParam String robotId, Model model){
         model.addAttribute("userName", user.getUsername());
+        model.addAttribute("scripts", scriptService.getUserScripts(user.getUsername()));
         Optional<Robot> ro = robotService.findById(robotId);
         if(ro.isPresent()){
             Robot robot = ro.get();
@@ -87,13 +88,16 @@ public class UserController {
             Robot storedRobot = ro.get();
             storedRobot.setName(robot.getName());
             storedRobot.setConfigurations(robot.getConfigurations());
+            storedRobot.setScript(robot.getScript());
             robotService.save(storedRobot);
         }
         String robotSession = robotRegistry.getSessionId(robot.getId().toString());
         if(robotSession != null){
             try {
                 messageService.sendToSession("config", robotSession, mapper.writeValueAsString(robot.getConfigurations()));
-                robotRegistry.getRobotBySession(robotSession).setConfigurations(robot.getConfigurations());
+                Robot robotBySession = robotRegistry.getRobotBySession(robotSession);
+                robotBySession.setConfigurations(robot.getConfigurations());
+                robotBySession.setScript(robot.getScript());
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

@@ -27,9 +27,9 @@
                         <canvas class="lamp-red"></canvas>
                     </button>
                     <label class="underline-dark dev-list-msg flex f-center"></label>
-                    <button id="info" class="dev-btn f20 mr1 blue"><img src="resources/icons/info.svg" class="dev-icon"></button>
-                    <button id="settings" onclick="window.location.href='/user/settings?robotId=${robot.id}'" class="dev-btn f20 mr1 orange"><img src="resources/icons/settings.svg" class="dev-icon"></button>
-                    <button id="delete" class="dev-btn f20 mr2 red"><img src="resources/icons/delete.svg" class="dev-icon"></button>
+                    <button id="info" class="dev-btn f20 mr1 blue"><img src="/resources/icons/info.svg" class="dev-icon"></button>
+                    <button id="settings" onclick="window.location.href='/user/settings?robotId=${robot.id}'" class="dev-btn f20 mr1 orange"><img src="/resources/icons/settings.svg" class="dev-icon"></button>
+                    <button id="delete" class="dev-btn f20 mr2 red"><img src="/resources/icons/delete.svg" class="dev-icon"></button>
                 </li>
             </c:forEach>
         </ul>
