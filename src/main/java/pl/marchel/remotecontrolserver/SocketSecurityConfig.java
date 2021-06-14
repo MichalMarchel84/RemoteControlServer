@@ -10,7 +10,7 @@ public class SocketSecurityConfig extends AbstractSecurityWebSocketMessageBroker
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages.simpDestMatchers("/channels/**").denyAll();
-        messages.simpDestMatchers("/endpoint").permitAll();
+        messages.simpDestMatchers("/endpoint/**").permitAll();
     }
 
     @Override
