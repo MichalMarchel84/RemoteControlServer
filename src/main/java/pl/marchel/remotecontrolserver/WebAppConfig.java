@@ -11,12 +11,4 @@ public class WebAppConfig implements WebMvcConfigurer {
         registry.addRedirectViewController("/", "/home");
         registry.addViewController("/403").setViewName("error/403");
     }
-
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
-//        registry.addMapping("chrome-extension://omcjoefhfhpmjkofljiolojnmofenkpe")
-//                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
-//    }
 }

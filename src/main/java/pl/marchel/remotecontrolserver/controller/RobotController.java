@@ -74,22 +74,14 @@ public class RobotController {
         String clientSession = robotRegistry.getConnectedWith(robotSession);
         if(clientSession != null) {
             switch (message.getType()) {
-                case "connect":
-                    messageService.sendToSession("message", clientSession, "Connected");
+                case "connected":
+                    //handle event
                     break;
                 case "disconnect":
-                    messageService.sendToSession("message", clientSession, "You are disconnected");
-                    robotRegistry.disconnect(robotSession);
-                    break;
-                case "failed":
-                    messageService.sendToSession("message", clientSession, "Failed to establish connection");
-                    robotRegistry.disconnect(robotSession);
-                    break;
-                case "timeout":
-                    messageService.sendToSession("message", clientSession, "Signalling timed out");
                     robotRegistry.disconnect(robotSession);
                     break;
             }
+            messageService.sendToSession("message", clientSession, message.getData());
         }
     }
 }
