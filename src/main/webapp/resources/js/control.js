@@ -7,37 +7,40 @@ const configuration = {
     ]
 };
 const keysDown = [];
+const mousePosition = [2];
+const mousePrevPosition = [2];
 let videoRatio = 0.6;
 let videoWidth = 0.7;
 let peerConnection = null;
 let stompClient = null;
 let dataChannel = null;
 let stream = null;
-let timer;
+let keyTimer = null;
+let mouseTimer = null;
 
 init();
 connect();
 
-function init(){
+function init() {
     let videoConfig = null;
     let keyConfig = null;
     configs.forEach(cfg => {
-        if(cfg.name === "Video configuration"){
+        if (cfg.name === "Video configuration") {
             videoConfig = cfg;
-        }else if(cfg.name === "Keyboard"){
+        } else if (cfg.name === "Keyboard") {
             keyConfig = cfg;
         }
     });
-    if(videoConfig != null){
+    if (videoConfig != null) {
         let width = null;
         let height = null;
         videoConfig.params.forEach(param => {
-            if(param.name === "width") width = param.value;
-            else if(param.name === "height") height = param.value;
+            if (param.name === "width") width = param.value;
+            else if (param.name === "height") height = param.value;
         });
-        videoRatio = height/width;
+        videoRatio = height / width;
     }
-    if(keyConfig != null){
+    if (keyConfig != null) {
         const list = document.querySelector("#info-list");
         keyConfig.params.forEach(param => {
             const tr = document.createElement("tr");
@@ -81,7 +84,7 @@ function onMessage(msg) {
         peerConnection.createAnswer(function (answer) {
             peerConnection.setLocalDescription(answer);
             send("answer", answer);
-        }, function (error){
+        }, function (error) {
             console.log(error);
         });
     } else if (msg.type === "answer") {
@@ -99,6 +102,10 @@ function sendKeys(keys) {
     dataChannel.send(JSON.stringify({"type": "keys", "data": keys}));
 }
 
+function sendMouse(delta) {
+    dataChannel.send(JSON.stringify({"type": "mouse", "data": delta}));
+}
+
 function disconnect() {
     finalizePeerConnection();
 }
@@ -114,6 +121,23 @@ function keyUp(e) {
     if (i > -1) keysDown.splice(i, 1);
     sendKeys(keysDown);
 };
+
+function mouseClicked(e) {
+    let delta = [3];
+    delta[0] = 0;
+    delta[1] = 0;
+    delta[2] = 1;
+    sendMouse(delta);
+}
+
+function mouseMoved(e) {
+    mousePosition[0] = e.pageX / window.innerWidth;
+    mousePosition[1] = e.pageY / window.innerHeight;
+    if(mousePrevPosition[0] == null){
+        mousePrevPosition[0] = mousePosition[0];
+        mousePrevPosition[1] = mousePosition[1];
+    }
+}
 
 function initializePeerConnection() {
 
@@ -135,16 +159,34 @@ function initializePeerConnection() {
 
             document.addEventListener("keydown", keyDown);
             document.addEventListener("keyup", keyUp);
-            timer = window.setInterval(() => {
+            document.addEventListener("click", mouseClicked);
+            document.addEventListener("mousemove", mouseMoved);
+            mousePosition[0] = null
+            mousePrevPosition[0] = null;
+            keyTimer = window.setInterval(() => {
                 if (keysDown.length) {
                     sendKeys(keysDown)
                 }
             }, 500);
+            mouseTimer = window.setInterval(() => {
+                if (mousePosition[0] != null) {
+                    let delta = [2];
+                    delta[0] = mousePosition[0] - mousePrevPosition[0];
+                    delta[1] = mousePosition[1] - mousePrevPosition[1];
+                    sendMouse(delta);
+                    console.log(delta);
+                    mousePrevPosition[0] = mousePosition[0];
+                    mousePrevPosition[1] = mousePosition[1];
+                    mousePosition[0] = null;
+                }
+            }, 50);
         }
         dataChannel.onclose = function () {
-            window.clearInterval(timer);
+            window.clearInterval(keyTimer);
             document.removeEventListener("keydown", keyDown);
             document.removeEventListener("keyup", keyUp);
+            document.removeEventListener("mousedown", mouseClicked);
+            document.removeEventListener("mouseup", mouseMoved);
         }
     };
 
@@ -166,9 +208,9 @@ function initializePeerConnection() {
             case "connected":
                 let width = window.innerWidth * videoWidth;
                 let height = width * videoRatio;
-                if(height > window.innerHeight*0.8){
-                    height = window.innerHeight*0.8;
-                    width = height/videoRatio;
+                if (height > window.innerHeight * 0.8) {
+                    height = window.innerHeight * 0.8;
+                    width = height / videoRatio;
                 }
                 const element = document.querySelector("#video-box");
                 element.style = "display: flex";
@@ -196,35 +238,35 @@ function finalizePeerConnection() {
     peerConnection = null;
 }
 
-function deploy(element, width, height, deployTime){
+function deploy(element, width, height, deployTime) {
     const dt = 20;
-    const step = width/(deployTime/dt);
+    const step = width / (deployTime / dt);
     let aw = 0;
     let ah = 0;
     const timer = setInterval(() => {
-        if(ah < height){
+        if (ah < height) {
             ah += step;
-            if(ah > height) ah = height;
+            if (ah > height) ah = height;
         }
-        if(aw < width){
+        if (aw < width) {
             aw += step;
-            if(aw > width) aw = width;
+            if (aw > width) aw = width;
         }
         resize(element, aw, ah);
-        if((aw === width) && (ah === height)) clearInterval(timer);
+        if ((aw === width) && (ah === height)) clearInterval(timer);
         window.addEventListener("resize", () => {
             let w = window.innerWidth * videoWidth;
             let h = w * videoRatio;
-            if(h > window.innerHeight*0.8){
-                h = window.innerHeight*0.8;
-                w = h/videoRatio;
+            if (h > window.innerHeight * 0.8) {
+                h = window.innerHeight * 0.8;
+                w = h / videoRatio;
             }
             resize(element, w, h);
         })
     }, dt);
 }
 
-function resize(element, width, height){
+function resize(element, width, height) {
     element.style.width = width;
     element.style.height = height;
 }
