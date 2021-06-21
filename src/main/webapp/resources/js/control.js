@@ -24,11 +24,14 @@ connect();
 function init() {
     let videoConfig = null;
     let keyConfig = null;
+    let infoConfig = null;
     configs.forEach(cfg => {
         if (cfg.name === "Video configuration") {
             videoConfig = cfg;
         } else if (cfg.name === "Keyboard") {
             keyConfig = cfg;
+        } else if(cfg.name === "Info"){
+            infoConfig = cfg;
         }
     });
     if (videoConfig != null) {
@@ -43,6 +46,15 @@ function init() {
     if (keyConfig != null) {
         const list = document.querySelector("#info-list");
         keyConfig.params.forEach(param => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${param.value}</td><td>${param.name}</td>`;
+            tr.className = "f20";
+            list.append(tr);
+        });
+    }
+    if (infoConfig != null) {
+        const list = document.querySelector("#info-list");
+        infoConfig.params.forEach(param => {
             const tr = document.createElement("tr");
             tr.innerHTML = `<td>${param.value}</td><td>${param.name}</td>`;
             tr.className = "f20";
@@ -123,11 +135,13 @@ function keyUp(e) {
 };
 
 function mouseClicked(e) {
-    let delta = [3];
-    delta[0] = 0;
-    delta[1] = 0;
-    delta[2] = 1;
-    sendMouse(delta);
+    if((e.target.tagName != "BUTTON") && (e.target.tagName != "IMG")) {
+        let delta = [3];
+        delta[0] = 0;
+        delta[1] = 0;
+        delta[2] = 1;
+        sendMouse(delta);
+    }
 }
 
 function mouseMoved(e) {
@@ -174,7 +188,6 @@ function initializePeerConnection() {
                     delta[0] = mousePosition[0] - mousePrevPosition[0];
                     delta[1] = mousePosition[1] - mousePrevPosition[1];
                     sendMouse(delta);
-                    console.log(delta);
                     mousePrevPosition[0] = mousePosition[0];
                     mousePrevPosition[1] = mousePosition[1];
                     mousePosition[0] = null;
@@ -200,7 +213,7 @@ function initializePeerConnection() {
         const video = document.querySelector("#video");
         video.srcObject = stream;
         stream.addTrack(event.track);
-        video.style.cssText = "-moz-transform: scale(-1, -1); -webkit-transform: scale(-1, -1); -o-transform: scale(-1, -1); transform: scale(-1, -1); filter: FlipV; filter: FlipH";
+        // video.style.cssText = "-moz-transform: scale(-1, -1); -webkit-transform: scale(-1, -1); -o-transform: scale(-1, -1); transform: scale(-1, -1); filter: FlipV; filter: FlipH";
     }
 
     peerConnection.onconnectionstatechange = function (event) {
