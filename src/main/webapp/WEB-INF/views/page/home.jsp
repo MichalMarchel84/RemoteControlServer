@@ -145,7 +145,7 @@
             </li><br/>
             <li>
                 Now - if everything went well - browser script and robot are connected directly peer-to-peer. Robot
-                is streaming video from it's camera and browser script relays keyboard inputs and mouse drag events to
+                is streaming video from it's camera and browser script relays keyboard inputs and mouse events to
                 the robot through WebRTC datachannel. At this point, robot notifies service sending
                 {"type":"connected","data":"Connected"} to "/app/reports" and service relays it to browser script
                 as {"type":"message","data":"Connected"}
