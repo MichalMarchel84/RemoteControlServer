@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.marchel.remotecontrolserver.model.Robot;
 import pl.marchel.remotecontrolserver.model.Script;
 import pl.marchel.remotecontrolserver.model.User;
+import pl.marchel.remotecontrolserver.service.EmailService;
 import pl.marchel.remotecontrolserver.service.RobotService;
 import pl.marchel.remotecontrolserver.service.UserService;
 import pl.marchel.remotecontrolserver.utils.RobotRegistry;
@@ -29,12 +30,14 @@ public class PageController {
     private final RobotRegistry registry;
     private final UserService users;
     private final ObjectMapper mapper;
+    private final EmailService emailService;
 
-    public PageController(RobotService service, RobotRegistry registry, UserService users, ObjectMapper mapper) {
+    public PageController(RobotService service, RobotRegistry registry, UserService users, ObjectMapper mapper, EmailService emailService) {
         this.service = service;
         this.registry = registry;
         this.users = users;
         this.mapper = mapper;
+        this.emailService = emailService;
     }
 
     @GetMapping("/home")
@@ -100,5 +103,22 @@ public class PageController {
     @GetMapping("/robot-articles")
     public String showRobotArticle(@RequestParam String name){
         return "page/articles/" + name;
+    }
+
+    @GetMapping("/message")
+    public String displayForm(){
+        return "page/message";
+    }
+
+    @PostMapping("/message")
+    public String sendMail(@RequestParam String email, @RequestParam String message, Model model){
+        try{
+            emailService.sendSimpleMessage(email, message);
+            model.addAttribute("pageMsg", "Message have been sent<br/>I will reply as soon as possible");
+        }catch (Exception e){
+            e.printStackTrace();
+            model.addAttribute("pageMsg", "Failed to send message...");
+        }
+        return "page/message";
     }
 }

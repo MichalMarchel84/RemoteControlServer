@@ -25,6 +25,8 @@
         <a href="/download" class="link header-color">Download</a>
         <span>|</span>
         <a href="/register" class="link header-color">Register</a>
+        <span>|</span>
+        <a href="/message" class="link header-color">Contact</a>
         <sec:authorize access="isAuthenticated()">
             <span>|</span>
             <a href="/user" class="link header-color">Devices</a>
