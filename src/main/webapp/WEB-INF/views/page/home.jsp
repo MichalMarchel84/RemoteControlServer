@@ -171,7 +171,58 @@
         <span class="page-font f30 ml2">Customization</span>
     </div>
     <div id="art3cont" class="article-body page-border flex f-column text-font f20" style="display: none">
-        <h2>Section in production...</h2>
+        <p>
+            As it was mentioned before, after connection between client and robot is established, server is no longer
+            involved in communication. Therefore, everything what happens next, depends on how it was coded in client
+            side script and robot side program. You can download the code for both ends from "Download" section for
+            reference and refactor it as you like. Below you can find some further explanation on how it works.
+        </p>
+        <h2>Robot side program</h2>
+        <p>
+            Inside robot/src directory, there are two .js files: connection.js and core.js<br/><br>
+            connection.js - here is the code responsible for establishing WebRTC connection, streaming media to client
+            and forwarding control messages to core.js. By default, it streams only video, but if you're planning to
+            install a microphone on your device, find function startVideo() and set "audio" constraint to
+            "true".<br/>
+            Debugging can be done by accessing chromium console available via VNC remote desktop :1 or by function
+            logCore(value) which will write "value" to program console<br/><br/>
+            core.js - this code starts connection.js in chromium browser (by launchNetwork() function) and controls
+            robot hardware by interpreting control messages.<br/>
+            Hardware control is made by instances of classes motor, servo and light. Respective GPIO pin numbers are
+            specified in constants declared on the beginning of script.<br/>
+            Interpretation of control messages is done by handleKeys(keys) and handleMouse(mouse) functions<br/><br/>
+            Any changes to the above mentioned files will be applied after restarting program (you can reboot device or
+            shut down program manually and run "bash start.sh" command from console).<br/><br/>
+            log.txt - when program is started automatically from crontab, it generates log.txt file under robot/src
+            directory. If program fails to start automatically - here you can find out what happened.
+        </p>
+        <h2>Client side script</h2>
+        <p>
+            If you don't specify any custom client side script, a default one will be loaded when opening connection to
+            a device. It will display video stream from robot and pass keyboard and mouse actions to the robot.<br/><br/>
+            If you like to have something else, you can create your own script and upload it by clicking "Scripts" tab
+            in "Devices" panel. As the script is ready, it can be assigned to a device from device settings panel (
+            under "Browser control script").
+        </p>
+        <h2>Configurations</h2>
+        <p>
+            Configurations are optional - you don't have to use it, but it can be useful in some situations.<br/><br/>
+            Generally, configurations is an array of configuration objects which can be sent to "/app/config" as
+            payload of STOMP message after robot was authenticated. Service will replace it's values with values stored
+            in database (if they exists) and send configurations back to robot. New configurations will be stored in
+            database and available anytime in device settings. They will be also available from browser control script.
+            <br/><br/>
+            For example, this configurations from "Tracked Robot" core.js
+            <br/><br>
+            <img src="/resources/img/config-file.png" class="img-wide"><br/><br/>
+            <br/><br/>
+            Converts to such view in Tracked Robot device settings (Video configuration is defined in connection.js):
+            <br/><br>
+            <img src="/resources/img/config-page.png" class="img-wide"><br/><br/>
+            <br/><br/>
+            Now, you don't need to modify these values in your code directly. Any changes done in device settings will
+            be forwarded to device (although it's up to the device what it is going to do with it).
+        </p>
     </div>
 </div>
 

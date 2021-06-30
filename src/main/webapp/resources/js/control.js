@@ -131,7 +131,7 @@ function keyUp(e) {
 };
 
 function mouseClicked(e) {
-    if((e.target.tagName != "BUTTON") && (e.target.tagName != "IMG")) {
+    if((e.target.tagName !== "BUTTON") && (e.target.tagName !== "IMG")) {
         let delta = [3];
         delta[0] = 0;
         delta[1] = 0;
@@ -209,7 +209,6 @@ function initializePeerConnection() {
         const video = document.querySelector("#video");
         video.srcObject = stream;
         stream.addTrack(event.track);
-        // video.style.cssText = "-moz-transform: scale(-1, -1); -webkit-transform: scale(-1, -1); -o-transform: scale(-1, -1); transform: scale(-1, -1); filter: FlipV; filter: FlipH";
     }
 
     peerConnection.onconnectionstatechange = function (event) {
