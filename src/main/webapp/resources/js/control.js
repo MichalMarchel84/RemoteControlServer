@@ -24,14 +24,14 @@ connect();
 function init() {
     let videoConfig = null;
     let keyConfig = null;
-    let infoConfig = null;
+    let mouseConfig = null;
     configs.forEach(cfg => {
         if (cfg.name === "Video configuration") {
             videoConfig = cfg;
         } else if (cfg.name === "Keyboard") {
             keyConfig = cfg;
-        } else if(cfg.name === "Info"){
-            infoConfig = cfg;
+        } else if(cfg.name === "Mouse"){
+            mouseConfig = true;
         }
     });
     if (videoConfig != null) {
@@ -52,14 +52,10 @@ function init() {
             list.append(tr);
         });
     }
-    if (infoConfig != null) {
-        const list = document.querySelector("#info-list");
-        infoConfig.params.forEach(param => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `<td>${param.value}</td><td>${param.name}</td>`;
-            tr.className = "f20";
-            list.append(tr);
-        });
+    if (mouseConfig) {
+        const p = document.querySelector("#other");
+        p.innerHTML = `Click left mouse button to switch between drive mode/free camera mode<br/>
+                        In free camera mode, move mouse to look around`;
     }
     document.querySelector("#info").addEventListener("click", () => {
         document.querySelector("#info-cont").style = "display: flex";

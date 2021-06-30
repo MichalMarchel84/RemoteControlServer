@@ -44,6 +44,7 @@
                     <th class="page-color">key</th><th class="page-color">command</th>
                 </tr>
             </table>
+            <p id="other" class="f20 page-color text-font text-center"></p>
         </div>
         <button id="close" class="button-blue f20 shadow page-font mb3">Close</button>
     </div>

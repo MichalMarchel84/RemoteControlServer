@@ -60,7 +60,7 @@
             <p class="table-element f20 text-font" style="text-align: center">
                 If you wonder how it works in practice, just click a robot you want to try.<br/><br/>
                 You will receive live video stream from camera and have full control over robot's functions.
-                After connecting, to find out how to control the robot, click on the
+                After connecting, to find out how to control the robot, click the
                 <img src="/resources/icons/info.svg" style="width: 1em; height: auto"/>
                 button (top-right corner).<br/><br/>Note that robot need to be in "Ready" state to accept connection.
                 Maximum duration of test run is 5 minutes. After this time, you will be disconnected.
