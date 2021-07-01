@@ -14,7 +14,7 @@
 <body>
 <%@include file="../header.jsp" %>
 <h1>
-  Article in production...
+  Article (and robot) in production...
 </h1>
 <%@include file="../footer.jsp" %>
 </body>

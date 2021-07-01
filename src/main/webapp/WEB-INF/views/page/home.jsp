@@ -32,10 +32,7 @@
         Later on this page you can find more information about usage, or give it a try taking control of one of
         available robots. Hope you will enjoy!<br/><br/>
     </p>
-    <p class="f20 text-font" style="color: red">
-        Note: Current status of this project is "work in progress" so don't be surprised if some things won't work as it
-        should... Sorry for inconvenience.
-    </p>
+
     <div class="flex f-column f-center page-border vm5">
         <h2 class="page-font f30 page-color">Try it yourself</h2>
         <div class="flex f-between mb3">

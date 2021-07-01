@@ -443,3 +443,16 @@ body {
 .script-name{
     padding: 0.2em 0.5em;
 }
+
+/*---------articles---------*/
+
+.expandable{
+    width: 100%;
+    height: auto;
+}
+
+.expandable:hover{
+    transform-origin: left;
+    transform: scale(2);
+    -webkit-transition: transform 1s ease-in-out;
+}
